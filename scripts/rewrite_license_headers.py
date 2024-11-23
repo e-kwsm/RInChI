@@ -24,7 +24,7 @@ def process_source_file(a_filename):
 			stop_line = stop_line + 1
 
 		if stop_line >= len(source_txt):
-			raise Exception, "File '" + a_filename + "' has a license-begin marker but no end marker."
+			raise Exception("File '" + a_filename + "' has a license-begin marker but no end marker.")
 
 		if source_txt[start_line].find(BSD_LICENSE_MARKER_BEGIN) >= 0:
 			if a_filename.endswith('.py'):
@@ -39,7 +39,7 @@ def process_source_file(a_filename):
 
 		open(a_filename, "w").write("".join(new_txt))
 	else:
-		print "WARNING: File '" + a_filename + "' has no license region marker."
+		print("WARNING: File '" + a_filename + "' has no license region marker.")
 
 	global processed_file_count
 	processed_file_count = processed_file_count + 1
@@ -52,7 +52,7 @@ def process_dir(a_dir):
 			process_dir(a_dir + f + "/")
 		else:
 			if f.endswith('.h') or f.endswith('.cpp') or f.endswith('.py') or f.endswith('.pck'):
-				if a_dir <> BASE_DIR:
+				if a_dir != BASE_DIR:
 					process_source_file(a_dir + f)
 
 
@@ -62,7 +62,7 @@ BSD_LICENSE_TXT = [""]
 RINCHI_LICENSE_TXT = [""]
 
 if len(sys.argv) < 2:
-	raise Exception, "You must pass either a revision date or the command 'CLEAR'."
+	raise Exception("You must pass either a revision date or the command 'CLEAR'.")
 if sys.argv[1].upper() != "CLEAR":
 	BSD_LICENSE_TXT = open("../src/LICENCES/bsd_license.txt").readlines()
 	RINCHI_LICENSE_TXT = open("../src/LICENCES/rinchi_license.txt").readlines()
@@ -74,7 +74,7 @@ else:
 rinchi_consts = open("../src/rinchi/rinchi_consts.cpp").readlines()
 rinchi_version = [x for x in rinchi_consts if x.find("RINCHI_VERSION =") > 0]
 if len(rinchi_version) != 1:
-	raise Exception, "Can't determine RINCHI_VERSION."
+	raise Exception("Can't determine RINCHI_VERSION.")
 rinchi_version = rinchi_version[0]
 rinchi_version = rinchi_version[rinchi_version.find("="):]
 rinchi_version = rinchi_version.replace('"', '').replace("=", "").replace("\r", "").replace("\n", "").replace(";", "").replace(" ", "")
@@ -91,4 +91,4 @@ RINCHI_LICENSE_MARKER_BEGIN = "#pragma region InChI-Trust Licence"
 LICENSE_MARKER_END = "#pragma endregion"
 
 process_dir(BASE_DIR)
-print str(processed_file_count) + " files processed."
+print(str(processed_file_count) + " files processed.")
