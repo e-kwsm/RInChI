@@ -716,7 +716,7 @@ const std::string Reaction::rinchi_web_key()
 #endif
 
 	// Create a unique list of all component InChIs.
-	typedef std::map<std::string, int> UniqueStringList;
+	using UniqueStringList = std::map<std::string, int>;
 	UniqueStringList unique_inchis;
 
 	ReactionComponentList* all_comp_lists[RINCHI_NUM_GROUPS];
@@ -731,7 +731,7 @@ const std::string Reaction::rinchi_web_key()
 
 	// Sort unique InChIs. A map will keep items sorted, but that is an implementation detail
 	// that I do not dare to rely on. So push items to a standard vector and sort that.
-	typedef std::vector<std::string> StringList;
+	using StringList = std::vector<std::string>;
 	StringList sorted_inchis;
 
 	for (UniqueStringList::const_iterator i = unique_inchis.begin(); i != unique_inchis.end(); i++)

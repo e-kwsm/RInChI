@@ -54,7 +54,7 @@ namespace rinchi {
 
 namespace {
 
-	typedef map<inchi_Atom*, int> ValenceMap;
+	using ValenceMap = map<inchi_Atom*, int>;
 
 	void check(bool condition, const std::string& err_msg)
 	{
@@ -66,7 +66,7 @@ namespace {
 		rinchi::check_range<MdlMolfileReaderError>(value, min, max, err_msg.c_str());
 	}
 
-	typedef std::vector<inchi_Atom*> AtomPointerList;
+	using AtomPointerList = std::vector<inchi_Atom*>;
 
 	void read_V2000_charges(const string& current_line, AtomPointerList& atom_block_charged_atoms, ReactionComponent& result)
 	{
