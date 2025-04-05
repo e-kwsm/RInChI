@@ -157,12 +157,12 @@ public:
 	// Force re-calculation on next request of RInChI string, auxinfo or key.
 	// void reset_rinchis(); // TODO: Implement.
 
-	const std::string rinchi_string();
-	const std::string rinchi_auxinfo();
+	std::string rinchi_string();
+	std::string rinchi_auxinfo();
 
-	const std::string rinchi_long_key();
-	const std::string rinchi_short_key();
-	const std::string rinchi_web_key();
+	std::string rinchi_long_key();
+	std::string rinchi_short_key();
+	std::string rinchi_web_key();
 };
 
 #ifdef IN_RINCHI_TEST_SUITE

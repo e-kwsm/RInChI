@@ -169,7 +169,7 @@ inline void safe_strcpy(char* dst, size_t dst_size, const char* src, size_t char
 
 // The GCC compiler returns mangled names from typeid().name(). This function fixes it.
 /** See http://groups.google.dk/group/gnu.g++.help/browse_thread/thread/ec73e8a6d9b534c8/982c86fc810f4208?lnk=st&q=gcc+demangle+typeid()&rnum=1&hl=da#982c86fc810f4208 **/
-const std::string demangled_class_name(std::string class_name);
+std::string demangled_class_name(std::string class_name);
 
 // Platform-agnostic version of std::getline(), handling Windows-, Mac-, or UNIX-like line feeds.
 void rinchi_getline(std::istream& input, std::string& s);

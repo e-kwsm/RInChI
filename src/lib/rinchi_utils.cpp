@@ -67,7 +67,7 @@ void chdir(const char* path) {
 		throw std::runtime_error("chdir() to " + std::string(path) + " failed.");
 }
 
-const std::string demangled_class_name(std::string class_name)
+std::string demangled_class_name(std::string class_name)
 {
 #ifdef __GNUC__
 	// Demangle typeid to get real class name.

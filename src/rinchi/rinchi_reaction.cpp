@@ -358,7 +358,7 @@ void Reaction::update_cache()
 	m_is_cache_valid = true;
 }
 
-const std::string Reaction::rinchi_string()
+std::string Reaction::rinchi_string()
 {
 	update_cache();
 
@@ -390,7 +390,7 @@ const std::string Reaction::rinchi_string()
 	return result.str();;
 }
 
-const std::string Reaction::rinchi_auxinfo()
+std::string Reaction::rinchi_auxinfo()
 {
 	update_cache();
 
@@ -472,7 +472,7 @@ namespace {
 
 }
 
-const std::string Reaction::rinchi_long_key()
+std::string Reaction::rinchi_long_key()
 {
 	update_cache();
 
@@ -674,7 +674,7 @@ namespace {
 	};
 }
 
-const std::string Reaction::rinchi_short_key()
+std::string Reaction::rinchi_short_key()
 {
 	update_cache();
 #ifdef IN_RINCHI_TEST_SUITE
@@ -708,7 +708,7 @@ const std::string Reaction::rinchi_short_key()
 	return result.str();
 }
 
-const std::string Reaction::rinchi_web_key()
+std::string Reaction::rinchi_web_key()
 {
 	update_cache();
 #ifdef IN_RINCHI_TEST_SUITE
