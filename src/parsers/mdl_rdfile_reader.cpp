@@ -68,13 +68,13 @@ namespace {
 MdlRDfileReader::MdlRDfileReader()
 {
 	// Set default set of non-agent keywords.
-	m_non_agent_keywords.push_back("REACTANT");
-	m_non_agent_keywords.push_back("PRODUCT");
+	m_non_agent_keywords.emplace_back("REACTANT");
+	m_non_agent_keywords.emplace_back("PRODUCT");
 	// Alternate version of "reactant".
-	m_non_agent_keywords.push_back("EDUCT");
+	m_non_agent_keywords.emplace_back("EDUCT");
 	// German alternates that are likely to appear.
-	m_non_agent_keywords.push_back("REAKTANT");
-	m_non_agent_keywords.push_back("PRODUKT");
+	m_non_agent_keywords.emplace_back("REAKTANT");
+	m_non_agent_keywords.emplace_back("PRODUKT");
 
 	prepare_keywords(m_non_agent_keywords);
 }
