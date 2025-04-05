@@ -72,22 +72,22 @@ ReactionComponent::ReactionComponent()
 
 ReactionComponent::~ReactionComponent()
 {
-	if (m_inchi_input.atom != NULL)
+	if (m_inchi_input.atom != nullptr)
 		delete [] m_inchi_input.atom;
 }
 
 void ReactionComponent::clear_inchi_input()
 {
-	m_inchi_input.atom      = NULL;
-	m_inchi_input.stereo0D  = NULL;
-	m_inchi_input.szOptions = NULL;
+	m_inchi_input.atom      = nullptr;
+	m_inchi_input.stereo0D  = nullptr;
+	m_inchi_input.szOptions = nullptr;
 	m_inchi_input.num_atoms    = 0;
 	m_inchi_input.num_stereo0D = 0;
 }
 
 void ReactionComponent::initialize(int atom_count, bool is_chiral)
 {
-	if (m_inchi_input.atom != NULL)
+	if (m_inchi_input.atom != nullptr)
 		delete [] m_inchi_input.atom;
 
 	clear_inchi_input();
@@ -109,7 +109,7 @@ bool ReactionComponent::is_no_structure() const
 {
 	// If component was instantiated directly from RInChI, then
 	// 'm_inchi_input' has not had atoms allocated.
-	if (m_inchi_input.atom == NULL)
+	if (m_inchi_input.atom == nullptr)
 		return m_inchi_string == INCHI_STD_HEADER + "/";
 	else
 		return m_inchi_input.num_atoms == 0;
