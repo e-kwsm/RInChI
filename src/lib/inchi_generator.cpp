@@ -67,10 +67,10 @@ struct InChIState {
 	char xtra1[65];
 	char xtra2[65];
 
-	InChIState(): generator_handle(0) { }
+	InChIState(): generator_handle(nullptr) { }
 	~InChIState()
 	{
-		if (generator_handle == 0)
+		if (generator_handle == nullptr)
 			return;
 
 		lib_INCHIGEN_Destroy(generator_handle);
@@ -85,7 +85,7 @@ class InChICallState {
 public:
 	InChICallState()
 	{
-		if (inchi_lib_state.generator_handle == 0)
+		if (inchi_lib_state.generator_handle == nullptr)
 			inchi_lib_state.generator_handle = lib_INCHIGEN_Create();
 	}
 	~InChICallState()
@@ -210,7 +210,7 @@ void InChIGenerator::validate_inchi(const std::string& inchi_string)
 	if (rc == inchi_Ret_OKAY || rc == inchi_Ret_WARNING) {
 		// Even when return code says that all is OK, the output may be NULL.
 		// The error message is then returned as part of the log :-(.
-		if (inchi_output.szInChI == NULL) {
+		if (inchi_output.szInChI == nullptr) {
 			std::stringstream log_lines (inchi_output.szLog);
 			std::string line;
 			std::string err_msg;
@@ -261,7 +261,7 @@ InChIToStructureConverter::InChIToStructureConverter()
 {
 	reset();
 
-	if (inchi_lib_state.generator_handle == 0)
+	if (inchi_lib_state.generator_handle == nullptr)
 		inchi_lib_state.generator_handle = lib_INCHIGEN_Create();
 }
 
@@ -273,7 +273,7 @@ InChIToStructureConverter::~InChIToStructureConverter()
 void InChIToStructureConverter::free_inchi_structs()
 {
 	// Zero pointers to strings that we own - just in case.
-	m_input_inchi.szOptions = NULL;
+	m_input_inchi.szOptions = nullptr;
 
 	lib_Free_inchi_Input(&m_input_inchi);
 	lib_FreeINCHI(&m_output);
@@ -301,7 +301,7 @@ const
 
 std::string InChIToStructureConverter::to_molfile(const std::string& inchi_string, const std::string& auxinfo)
 {
-	if (m_input_data.pInp != NULL) {
+	if (m_input_data.pInp != nullptr) {
 		free_inchi_structs();
 		reset();
 	}
@@ -333,8 +333,8 @@ std::string InChIToStructureConverter::to_molfile(const std::string& inchi_strin
 		m_input_inchi.num_atoms    = m_output_struct.num_atoms;
 		m_input_inchi.stereo0D     = m_output_struct.stereo0D;
 		m_input_inchi.num_stereo0D = m_output_struct.num_stereo0D;
-		m_output_struct.atom = NULL;
-		m_output_struct.stereo0D = NULL;
+		m_output_struct.atom = nullptr;
+		m_output_struct.stereo0D = nullptr;
 	}
 
 	// Convert inchi_Input returned from above to SD record. Differing options are needed to
@@ -354,7 +354,7 @@ std::string InChIToStructureConverter::to_molfile(const std::string& inchi_strin
 	// e_ichimain.c line 761 and forward).
 	// Discard the first line containing an auto-generated structure name.
 	char* result_start = m_output.szInChI;
-	if (result_start == NULL)
+	if (result_start == nullptr)
 		throw InChIGeneratorError ("NULL string returned from successful GetINCHI call!");
 	while (*result_start != '\n' && *result_start != 0)
 		result_start++;
