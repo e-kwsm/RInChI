@@ -140,7 +140,7 @@ void MdlRDfileReader::read_reaction_from_stream(std::istream& input_stream, Reac
 				if (first_paren_pos != std::string::npos && next_paren_pos != std::string::npos) {
 					try {
 						next_var_no = str2int(upper_prev_line, (int) first_paren_pos + 1, (int) next_paren_pos - (int) first_paren_pos - 1);
-					} catch (std::exception) {
+					} catch (std::exception&) {
 						// OK, ignore variation numbers we can't read.
 					}
 				}
