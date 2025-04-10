@@ -69,8 +69,9 @@ namespace {
 			output_stream << std::endl;
 			output_stream << "Failure summary:" << std::endl;
 			output_stream << "----------------" << std::endl;
-			for (std::vector<std::string>::const_iterator s = err_msg_list.begin(); s != err_msg_list.end(); s++)
+			for (std::vector<std::string>::const_iterator s = err_msg_list.begin(); s != err_msg_list.end(); s++) {
 				output_stream << *s << std::endl << std::endl;
+			}
 		}
 	}
 
@@ -115,8 +116,9 @@ void TestCase::log_failure(const std::string& err_msg)
 
 void TestCase::chback_dir()
 {
-	for (unsigned int i = 0; i < m_path_segments.size(); i++)
+	for (unsigned int i = 0; i < m_path_segments.size(); i++) {
 		rinchi::chdir("..");
+	}
 }
 
 void TestCase::run_tests() {
@@ -134,8 +136,9 @@ void TestCase::run_tests() {
 		_GlobalTestStats.cases_total++;
 		try {
 			// Go to test subdirectory, if defined.
-			for (std::vector<std::string>::const_iterator dir = m_path_segments.begin(); dir != m_path_segments.end(); dir++)
+			for (std::vector<std::string>::const_iterator dir = m_path_segments.begin(); dir != m_path_segments.end(); dir++) {
 				rinchi::chdir(dir->c_str());
+			}
 
 			setup();
 			// Ensure that tear_down is always called.
@@ -177,8 +180,9 @@ void TestCase::run_tests() {
 
 void check_errmsg_has_substr(const std::string& err_msg, const std::string& sub_str, const std::string& additional_context)
 {
-	if (err_msg.find(sub_str) == std::string::npos)
+	if (err_msg.find(sub_str) == std::string::npos) {
 		throw TestFailure("unexpected error: " + err_msg + "; expected something containing '" + sub_str + "' [Context: " + additional_context + "].");
+	}
 }
 
 } } // End of namespaces.
