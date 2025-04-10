@@ -60,10 +60,12 @@ void MolfileReaderTests::inchi_1_06_regression()
 	std::string expected_inchi_string;
 	std::string expected_inchi_key;
 
-	if (!sdfile)
+	if (!sdfile) {
 		throw rinchi::unit_test::TestFailure("Can't open InChI standard input test set 'InChI_TestSet.sdf'.");
-	if (!expected_data)
+	}
+	if (!expected_data) {
 		throw rinchi::unit_test::TestFailure("Can't open InChI standard test results 'its-std-01.inc'.");
+	}
 
 	int current_line_no = 1;
 	int mol_no = 1;
@@ -132,8 +134,9 @@ void MolfileReaderTests::V3000_reader()
 	int test_count = 0;
 	for (boost::filesystem::directory_iterator testfile(current_dir); testfile != end_itr; testfile++) {
 		std::string filename_V3000 = testfile->path().string();
-		if (filename_V3000.find("V3000.mol") == std::string::npos)
+		if (filename_V3000.find("V3000.mol") == std::string::npos) {
 			continue;
+		}
 
 		test_count++;
 
