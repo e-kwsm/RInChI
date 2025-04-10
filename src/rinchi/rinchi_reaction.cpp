@@ -525,15 +525,17 @@ const std::string Reaction::rinchi_long_key()
 	int group_count = num_output_groups(true);
 	for (int i = 0; i < group_count; i++) {
 		output_inchikey_group(m_ordered_rcs[m_output_order[i]], m_nostruct_counts[m_output_order[i]], result);
-		if (i < group_count - 1)
+		if (i < group_count - 1) {
 			result << KEY_DELIM_GROUP;
+		}
 	}
 
 	// Strip trailing KEY_DELIM_BLOCK if no key groups were output.
-	if (result_str == result.str())
+	if (result_str == result.str()) {
 		return result_str.substr(0, result_str.length() - KEY_DELIM_BLOCK.length());
-	else
+	} else {
 		return result.str();
+	}
 }
 
 namespace {
@@ -544,10 +546,11 @@ namespace {
 	  NOTE: Must be recoded for systems using a non-ASCII based charset, e.g. EBCDIC. **/
 	char proton_count2char(int proton_count)
 	{
-		if (proton_count > 12 || proton_count < -12)
+		if (proton_count > 12 || proton_count < -12) {
 			return 'A';
-		else
+		} else {
 			return 'N' + proton_count;
+		}
 	}
 
 	/**
@@ -576,15 +579,16 @@ namespace {
 
 		void append(const std::string& inchi_string)
 		{
-			if (inchi_string.empty())
+			if (inchi_string.empty()) {
 				return;
+			}
 
 			size_t delim_pos = inchi_string.find(DELIM_LAYER);
 			size_t token_start = delim_pos + DELIM_LAYER.length();
 
-			if (delim_pos != 8) throw RInChIError("Invalid InChI string - no layers.");
-			if (inchi_string.at(delim_pos - 1) != 'S') throw RInChIError("Only standard InChIs are supported.");
-			if (inchi_string.at(delim_pos - 2) != '1') throw RInChIError("Only InChI version 1 supported.");
+			if (delim_pos != 8) { throw RInChIError("Invalid InChI string - no layers."); }
+			if (inchi_string.at(delim_pos - 1) != 'S') { throw RInChIError("Only standard InChIs are supported."); }
+			if (inchi_string.at(delim_pos - 2) != '1') { throw RInChIError("Only InChI version 1 supported."); }
 
 			bool is_first_layer = true;
 			bool is_major_layer = true;
@@ -602,11 +606,11 @@ namespace {
 				}
 
 				// First layer is the formula - it is always present.
-				if (is_first_layer)
+				if (is_first_layer) {
 					major_layers += layer;
 				// Check that layer is at least two chars. It may be a single '/' in the case
 				// of the empty InChI string "InChI=1S//". Empty layers will be ignored.
-				else if (layer.length() >= 2) {
+				} else if (layer.length() >= 2) {
 					if (is_major_layer) {
 						switch (layer.at(1)) {
 							case 'c':
@@ -622,38 +626,46 @@ namespace {
 								is_major_layer = false;
 						}
 					}
-					else
+					else {
 						minor_layers += layer;
+					}
 				}
 
 				is_first_layer = false;
-				if (delim_pos == std::string::npos)
+				if (delim_pos == std::string::npos) {
 					break;
+				}
 			}
 
 			// Remove leading slash from major and minor layer unless it is empty.
-			if (!major_layers.empty())
+			if (!major_layers.empty()) {
 				major_layers.erase(0, 1);
-			if (major_layers.empty())
+			}
+			if (major_layers.empty()) {
 				major_layers = DELIM_LAYER;
+			}
 
-			if (!minor_layers.empty())
+			if (!minor_layers.empty()) {
 				minor_layers.erase(0, 1);
+			}
 
-			if (!majors.empty())
+			if (!majors.empty()) {
 				majors += DELIM_COMP;
+			}
 			majors += major_layers;
 
-			if (!minors.empty())
+			if (!minors.empty()) {
 				minors += DELIM_COMP;
+			}
 			minors += minor_layers;
 		}
 
 		void append_components(const ReactionComponentList& rc_list)
 		{
 			for (ReactionComponentList::const_iterator rc = rc_list.begin(); rc != rc_list.end(); rc++) {
-				if ((*rc)->is_no_structure())
+				if ((*rc)->is_no_structure()) {
 					continue;
+				}
 				append((*rc)->inchi_string());
 			}
 		}
@@ -745,8 +757,9 @@ const std::string Reaction::rinchi_web_key()
 	all_comp_lists[2] = &m_agents;
 
 	for (int i = 0; i < RINCHI_NUM_GROUPS; i++) {
-		for (ReactionComponentList::const_iterator rc = all_comp_lists[i]->begin(); rc != all_comp_lists[i]->end(); rc++)
+		for (ReactionComponentList::const_iterator rc = all_comp_lists[i]->begin(); rc != all_comp_lists[i]->end(); rc++) {
 			unique_inchis.insert( make_pair((**rc).inchi_string(), 1) );
+		}
 	}
 
 	// Sort unique InChIs. A map will keep items sorted, but that is an implementation detail
@@ -754,16 +767,18 @@ const std::string Reaction::rinchi_web_key()
 	typedef std::vector<std::string> StringList;
 	StringList sorted_inchis;
 
-	for (UniqueStringList::const_iterator i = unique_inchis.begin(); i != unique_inchis.end(); i++)
+	for (UniqueStringList::const_iterator i = unique_inchis.begin(); i != unique_inchis.end(); i++) {
 		sorted_inchis.push_back(i->first);
+	}
 
 	std::sort(sorted_inchis.begin(), sorted_inchis.end());
 
 	// Output major/minor hash of combined unique InChI strings.
 	std::ostringstream result;
 	InChILayers layers;
-	for (StringList::const_iterator s = sorted_inchis.begin(); s != sorted_inchis.end(); s++)
+	for (StringList::const_iterator s = sorted_inchis.begin(); s != sorted_inchis.end(); s++) {
 		layers.append(*s);
+	}
 
 #ifdef IN_RINCHI_TEST_SUITE
 	__latest_hash_cleartext += layers.majors + "\n" + layers.minors + "\n";
