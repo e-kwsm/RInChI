@@ -94,8 +94,9 @@ void MdlRxnfileReader::read_reaction_from_stream(std::istream& input_stream, Rea
 
 		for (int i = 0; i < product_count; i++) {
 			get_next_line(input_stream);
-			if (m_current_line != MDL_TAG_RXN_COMPONENT_START)
+			if (m_current_line != MDL_TAG_RXN_COMPONENT_START) {
 				throw MdlRxnfileReaderError("Reaction components must be delimited by a '" + MDL_TAG_RXN_COMPONENT_START + "' line.");
+			}
 			ReactionComponent* rc = result.add_product();
 			mr.read_molecule(input_stream, *rc);
 			m_line_number += mr.lines_read();
@@ -103,15 +104,17 @@ void MdlRxnfileReader::read_reaction_from_stream(std::istream& input_stream, Rea
 
         for (int i = 0; i < agent_count; i++) {
 			get_next_line(input_stream);
-			if (m_current_line != MDL_TAG_RXN_COMPONENT_START)
+			if (m_current_line != MDL_TAG_RXN_COMPONENT_START) {
 				throw MdlRxnfileReaderError("Reaction components must be delimited by a '" + MDL_TAG_RXN_COMPONENT_START + "' line.");
+			}
 			ReactionComponent* rc = result.add_agent();
 			mr.read_molecule(input_stream, *rc);
 			m_line_number += mr.lines_read();
 		}
 
-		if (force_equilibrium)
+		if (force_equilibrium) {
 			result.set_directionality(rdEquilibrium);
+		}
 	}
 	catch (exception& e) {
 		throw_error(e);
@@ -123,8 +126,9 @@ void MdlRxnfileReader::read_reaction(std::istream& input_stream, Reaction& resul
 	m_input_name = "std::istream";
 	m_line_number = lines_already_read;
 
-	if (!input_stream)
+	if (!input_stream) {
 		throw_error("Input RXN file stream is not open");
+	}
 
 	read_reaction_from_stream(input_stream, result, force_equilibrium);
 }
@@ -135,8 +139,9 @@ void MdlRxnfileReader::read_reaction(const std::string& file_name, Reaction& res
 	m_line_number = lines_already_read;
 
 	ifstream input_stream ( file_name.c_str() );
-	if (!input_stream)
+	if (!input_stream) {
 		throw_error("Can't open input RXN file '" + file_name + "'");
+	}
 
 	read_reaction_from_stream(input_stream, result, force_equilibrium);
 }
