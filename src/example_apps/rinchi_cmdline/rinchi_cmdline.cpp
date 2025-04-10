@@ -54,8 +54,12 @@
 bool has_parameter(const std::string& p, int argc, char* argv[])
 {
 	for (int i = 1; i < argc; i++)
+	{
 		if (rinchi::lowercase(p) == rinchi::lowercase(std::string(argv[i])))
+		{
 			return true;
+		}
+	}
 
 	return false;
 }
@@ -88,7 +92,9 @@ int main(int argc, char* argv[])
 		bool option_output_rxn       = has_parameter("/rxn", argc, argv);
 
 		if (option_output_rd && option_output_rxn)
+		{
 			throw std::runtime_error ("Only one of /rd and /rxn may be used at a time.");
+		}
 
 		const char* file_name;
 		std::string file_format;
@@ -97,17 +103,25 @@ int main(int argc, char* argv[])
 		{
 			std::ifstream test_file(file_name);
 			if (!test_file) 
+			{
 				throw std::runtime_error (std::string("File '") + file_name + "' does not exist.");
+			}
 
 			// Detect input file format.
 			std::string first_line;
 			rinchi::rinchi_getline(test_file, first_line);
 			if (first_line == rinchi::MDL_TAG_RXN_BEGIN)
+			{
 				file_format = "RXN";
+			}
 			else if (first_line.substr(0, rinchi::RINCHI_STD_HEADER.length()) == rinchi::RINCHI_STD_HEADER)
+			{
 				file_format = "RINCHI";
+			}
 			else
+			{
 				file_format = "RD";
+			}
 		}
 
 		rinchi::Reaction rxn;
@@ -142,7 +156,9 @@ int main(int argc, char* argv[])
 			}
 		}
 		else
+		{
 			throw std::runtime_error ("Internal bug: Unsupported file format '" + file_format + "'.");
+		}
 
 		if (file_format != "RINCHI") {
 			std::cout << rxn.rinchi_string() << std::endl;
