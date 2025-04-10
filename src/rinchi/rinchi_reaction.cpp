@@ -432,8 +432,9 @@ namespace {
 	void output_inchikey_group(ReactionComponentList& component_list, int nostruct_count, std::ostream& output)
 	{
 		for (ReactionComponentList::const_iterator rc = component_list.begin(); rc != component_list.end(); rc++) {
-			if (rc != component_list.begin())
+			if (rc != component_list.begin()) {
 				output << KEY_DELIM_COMP;
+			}
 			const std::string& key = (*rc)->inchi_key();
 			// Concatenate standard InChI keys of components.
 			output << key;
@@ -441,11 +442,13 @@ namespace {
 
 		for (int i = 1; i <= nostruct_count; i++) {
 			if (i == 1) {
-				if (component_list.size() != 0)
+				if (component_list.size() != 0) {
 					output << KEY_DELIM_COMP;
+				}
 			}
-			else
+			else {
 				output << KEY_DELIM_COMP;
+			}
 
 			output << NOSTRUCT_RINCHI_LONGKEY;
 		}
@@ -457,19 +460,22 @@ namespace {
 	  NOTE: Must be recoded for systems using a non-ASCII based charset, e.g. EBCDIC. **/
 	char nostruct_count2char(int nostruct_count)
 	{
-		if (nostruct_count == 0)
+		if (nostruct_count == 0) {
 			return 'Z';
+		}
 
-		if (nostruct_count > 24)
+		if (nostruct_count > 24) {
 			return 'Y';
-		else
+		} else {
 			return 'A' + nostruct_count - 1;
+		}
 	}
 
 	void output_nostruct_count_chars(int (& nostruct_counts)[RINCHI_NUM_GROUPS], int (& output_order)[RINCHI_NUM_GROUPS], std::ostream& result)
 	{
-		for (int i = 0; i < RINCHI_NUM_GROUPS; i++)
+		for (int i = 0; i < RINCHI_NUM_GROUPS; i++) {
 			result << nostruct_count2char(nostruct_counts[output_order[i]]);
+		}
 	}
 
 	void output_direction_code(ReactionDirectionality direction, bool reverse_output, std::ostream& output)
@@ -477,10 +483,11 @@ namespace {
 		switch (direction)
 		{
 		case rdDirectional:
-			if (reverse_output)
+			if (reverse_output) {
 				output << "B";
-			else
+			} else {
 				output << "F";
+			}
 			break;
 		case rdEquilibrium:
 			output << "E";
