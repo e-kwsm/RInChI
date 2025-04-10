@@ -290,11 +290,13 @@ extern "C" {
 			rinchi::MdlRxnfileWriter rxn_writer;
 			rxn_writer.write_reaction(rxn, file_text_stream);
 		}
-		else
+		else {
 			throw rinchi::RInChIError(std::string("Unsupported output file format '") + output_format + "'.");
+		}
 
-		if ((int) file_text_stream.str().length() > *out_data_maxlen)
+		if ((int) file_text_stream.str().length() > *out_data_maxlen) {
 			throw std::runtime_error(std::string("Reaction file in '") + output_format + "' format has a length that exceeds max. length of Oracle-supplied character buffer.");
+		}
 
 		copy_result_to_oracharbuf(file_text_stream.str().c_str(), out_data, out_data_maxlen);
 		END_EXCP_CODE 
