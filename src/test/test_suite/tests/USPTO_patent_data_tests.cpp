@@ -59,11 +59,13 @@ void USPTOPatentDataTests::rxnfiles_subset()
 
 	int test_count = 0;
 	for (boost::filesystem::directory_iterator testfile(current_dir); testfile != end_itr; testfile++) {
-		if (!boost::filesystem::is_regular_file(testfile->path()))
+		if (!boost::filesystem::is_regular_file(testfile->path())) {
 			continue;
+		}
 		std::string test_filename = testfile->path().string();
-		if (test_filename.substr(test_filename.length() - 4, 4) != ".rxn")
+		if (test_filename.substr(test_filename.length() - 4, 4) != ".rxn") {
 			continue;
+		}
 
 		test_count++;
 
@@ -77,8 +79,9 @@ void USPTOPatentDataTests::rxnfiles_subset()
 		std::string expected_rinchi_string;
 		std::string expected_rinchi_auxinfo;
 		std::ifstream expected_file ( test_filename_rinchis.c_str() );
-		if (!expected_file)
+		if (!expected_file) {
 			throw rinchi::unit_test::TestFailure (test_filename_rinchis + " does not exist.");
+		}
 		rinchi::rinchi_getline(expected_file, expected_rinchi_string);
 		rinchi::rinchi_getline(expected_file, expected_rinchi_auxinfo);
 
