@@ -92,13 +92,21 @@ const char LF = 10;
 inline void remove_prefixed_and_trailing_cr(std::string& line)
 {
 	if (line.empty())
+	{
 		return;
+	}
 	if ( line[line.length() - 1] == CR )
+	{
 		line.erase(line.length() - 1, 1);
+	}
 	if (line.empty())
+	{
 		return;
+	}
 	if ( line[0] == CR )
+	{
 		line.erase(0, 1);
+	}
 }
 
 void rinchi_getline(std::istream& input, std::string& s)
@@ -173,9 +181,13 @@ int read_int(std::string::const_iterator& c, std::string::const_iterator stop_c)
 	}
 
 	if (is_negative)
+	{
 		return -result;
+	}
 	else
+	{
 		return result;
+	}
 }
 
 int read_int(const char*& c)
@@ -189,8 +201,9 @@ int read_int(const char*& c)
 	}
 	const char* start = c;
 	if (*c == '+')
+	{
 		c++;
-	else if (*c == '-') {
+	} else if (*c == '-') {
 		is_negative = true;  c++;
 	}
 
@@ -204,9 +217,11 @@ int read_int(const char*& c)
 	}
 
 	if (is_negative)
+	{
 		return -result;
-	else
+	} else {
 		return result;
+	}
 }
 
 } // end of namespace
