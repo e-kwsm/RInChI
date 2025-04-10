@@ -99,24 +99,25 @@ public:
 
 	static void check_return_code(int return_code)
 	{
-		if (return_code == inchi_Ret_OKAY)
+		if (return_code == inchi_Ret_OKAY) {
 			; // Success; no errors or warnings
-		else if (return_code == inchi_Ret_WARNING)
+		} else if (return_code == inchi_Ret_WARNING) {
 			; // Success; warning(s) issued /** SET WARNING FLAG **/
-		else if (return_code == inchi_Ret_ERROR)
+		} else if (return_code == inchi_Ret_ERROR) {
 			throw InChIGeneratorError ("Error: no InChI has been created.");
-		else if (return_code == inchi_Ret_FATAL)
+		} else if (return_code == inchi_Ret_FATAL) {
 			throw InChIGeneratorError ("Severe error: no InChI has been created (typically, memory allocation failure).");
-		else if (return_code == inchi_Ret_UNKNOWN)
+		} else if (return_code == inchi_Ret_UNKNOWN) {
 			throw InChIGeneratorError ("InChI library: Unknown program error.");
-		else if (return_code == inchi_Ret_BUSY)
+		} else if (return_code == inchi_Ret_BUSY) {
 			throw InChIGeneratorError ("Previuos call to InChI has not returned yet.");
-		else if (return_code == inchi_Ret_EOF)
+		} else if (return_code == inchi_Ret_EOF) {
 			throw InChIGeneratorError ("InChI library: No structural data has been provided.");
-		else if (return_code == inchi_Ret_SKIP)
+		} else if (return_code == inchi_Ret_SKIP) {
 			throw InChIGeneratorError ("InChI library: Not used in InChI library (?)");
-		else
+		} else {
 			throw InChIGeneratorError ("Unexpected return code from InChI library (" + int2str(return_code) + ").");
+		}
 	}
 
 	void run_inchi_generation(inchi_Input& inchi_input)
@@ -137,22 +138,23 @@ public:
 
 	static void check_key_return_code(int return_code)
 	{
-		if (return_code == INCHIKEY_OK)
+		if (return_code == INCHIKEY_OK) {
 			; // Success; no errors or warnings
-		else if (return_code == INCHIKEY_UNKNOWN_ERROR)
+		} else if (return_code == INCHIKEY_UNKNOWN_ERROR) {
 			throw InChIGeneratorError ("InChI library (generating key): Unknown program error.");
-		else if (return_code == INCHIKEY_EMPTY_INPUT)
+		} else if (return_code == INCHIKEY_EMPTY_INPUT) {
 			throw InChIGeneratorError ("InChI library (generating key): Source string is empty.");
-		else if (return_code == INCHIKEY_INVALID_INCHI_PREFIX)
+		} else if (return_code == INCHIKEY_INVALID_INCHI_PREFIX) {
 			throw InChIGeneratorError ("Invalid InChI prefix or invalid version.");
-		else if (return_code == INCHIKEY_NOT_ENOUGH_MEMORY)
+		} else if (return_code == INCHIKEY_NOT_ENOUGH_MEMORY) {
 			throw InChIGeneratorError ("InChI library (generating key): Not enough memory.");
-		else if (return_code == INCHIKEY_INVALID_INCHI)
+		} else if (return_code == INCHIKEY_INVALID_INCHI) {
 			throw InChIGeneratorError ("Source InChI has invalid layout.");
-		else if (return_code == INCHIKEY_INVALID_STD_INCHI)
+		} else if (return_code == INCHIKEY_INVALID_STD_INCHI) {
 			throw InChIGeneratorError ("Source standard InChI has invalid layout.");
-		else
+		} else {
 			throw InChIGeneratorError ("Unexpected return code from InChI library when generating InChI key (" + int2str(return_code) + ").");
+		}
 	}
 
 	void run_inchi_key_generation()
