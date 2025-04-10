@@ -60,7 +60,9 @@ std::string sha256hex(const std::string& input)
 	std::ostringstream result;
 	result << std::hex;
 	for (int i = 0; i < 32; i++)
+	{
 		result << ((int) chksum[i]);
+	}
 	
 	return result.str();
 }

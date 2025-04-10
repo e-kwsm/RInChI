@@ -439,9 +439,13 @@ void inchi_add_bond(inchi_Input& inchi_input, int from_atom_idx, int to_atom_idx
 	// InChI stereo bond has a negative int-value. In case this should change
 	// in future: In good automated regression tests we trust.
 	if (inchi_bondstereo != INCHI_BOND_STEREO_DOUBLE_EITHER)
+	{
 		to_iatom.bond_stereo[bond_idx] = - inchi_bondstereo;
+	}
 	else
+	{
 		to_iatom.bond_stereo[bond_idx] = inchi_bondstereo;
+	}
 }
 
 } // End of namespace.

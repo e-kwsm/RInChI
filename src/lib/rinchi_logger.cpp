@@ -57,7 +57,9 @@ std::string RInChILogger::all_msgs()
 {
 	std::stringstream result;
 	for (StringVector::const_iterator s = m_msg_list.begin(); s != m_msg_list.end(); s++)
+	{
 		result << *s << "\n";
+	}
 
 	return result.str();
 }

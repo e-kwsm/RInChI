@@ -71,7 +71,9 @@ struct InChIState {
 	~InChIState()
 	{
 		if (generator_handle == 0)
+		{
 			return;
+		}
 
 		lib_INCHIGEN_Destroy(generator_handle);
 	}
@@ -86,7 +88,9 @@ public:
 	InChICallState()
 	{
 		if (inchi_lib_state.generator_handle == 0)
+		{
 			inchi_lib_state.generator_handle = lib_INCHIGEN_Create();
+		}
 	}
 	~InChICallState()
 	{
