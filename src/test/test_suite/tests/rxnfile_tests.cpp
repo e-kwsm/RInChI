@@ -60,11 +60,13 @@ void RxnfileTests::standard_files()
 
 	int test_count = 0;
 	for (boost::filesystem::directory_iterator testfile(current_dir); testfile != end_itr; testfile++) {
-		if (!boost::filesystem::is_regular_file(testfile->path()))
+		if (!boost::filesystem::is_regular_file(testfile->path())) {
 			continue;
+		}
 		std::string test_filename = testfile->path().string();
-		if (test_filename.substr(test_filename.length() - 4, 4) != ".rxn")
+		if (test_filename.substr(test_filename.length() - 4, 4) != ".rxn") {
 			continue;
+		}
 
 		test_count++;
 
@@ -77,8 +79,9 @@ void RxnfileTests::standard_files()
 		std::string expected_rinchi_shortkey_layered;
 
 		std::ifstream expected_file ( test_filename_rinchis.c_str() );
-		if (!expected_file)
+		if (!expected_file) {
 			throw rinchi::unit_test::TestFailure (test_filename_rinchis + " does not exist.");
+		}
 		rinchi::rinchi_getline(expected_file, expected_rinchi_string);
 		rinchi::rinchi_getline(expected_file, expected_rinchi_auxinfo);
 		rinchi::rinchi_getline(expected_file, expected_rinchi_longkey);
@@ -110,8 +113,9 @@ namespace {
 		std::string expected_rinchi_shortkey_layered;
 
 		std::ifstream expected_file ( test_filename_rinchis.c_str() );
-		if (!expected_file)
+		if (!expected_file) {
 			throw rinchi::unit_test::TestFailure (test_filename_rinchis + " does not exist.");
+		}
 		rinchi::rinchi_getline(expected_file, expected_rinchi_string);
 		rinchi::rinchi_getline(expected_file, expected_rinchi_auxinfo);
 		rinchi::rinchi_getline(expected_file, expected_rinchi_longkey);
@@ -167,11 +171,11 @@ void RxnfileTests::chiral_flag_preservation()
 
 		// Check header lines for all components in rebuilt RXN file.
 		std::string line;
-		for (int i = 0; i < 10; ++i) std::getline(rxn_stream, line);
+		for (int i = 0; i < 10; ++i) { std::getline(rxn_stream, line); }
 		rinchi::unit_test::check_is_equal(line, "  6  5  0  0  0  0  0  0  0  0  1 V2000", "Component 1 should not be chiral");
-		for (int i = 0; i < 17; ++i) std::getline(rxn_stream, line);
+		for (int i = 0; i < 17; ++i) { std::getline(rxn_stream, line); }
 		rinchi::unit_test::check_is_equal(line, "  2  1  0  0  0  0  0  0  0  0  1 V2000", "Component 2 should not be chiral");
-		for (int i = 0; i < 9; ++i) std::getline(rxn_stream, line);
+		for (int i = 0; i < 9; ++i) { std::getline(rxn_stream, line); }
 		rinchi::unit_test::check_is_equal(line, "  5  5  0  0  0  0  0  0  0  0  1 V2000", "Component 3 should not be chiral");
 	}
 	{
@@ -193,15 +197,15 @@ void RxnfileTests::chiral_flag_preservation()
 
 			// Check header lines for all components in rebuilt RXN file.
 			std::string line;
-			for (int i = 0; i < 10; ++i) std::getline(rxn_stream, line);
+			for (int i = 0; i < 10; ++i) { std::getline(rxn_stream, line); }
 			//                                                     +-- Chiral flag.
 			rinchi::unit_test::check_is_equal(line, "  6  5  0  0  1  0  0  0  0  0  1 V2000", "Component 1 should be chiral");
 			// ... and also check a single line of coordinates.
 			std::getline(rxn_stream, line);
 			rinchi::unit_test::check_is_equal(line.substr(0, 32), "    1.6292   -6.9765    0.0000 C", "Component 1 should have coordinates");
-			for (int i = 0; i < 16; ++i) std::getline(rxn_stream, line);
+			for (int i = 0; i < 16; ++i) { std::getline(rxn_stream, line); }
 			rinchi::unit_test::check_is_equal(line, "  2  1  0  0  0  0  0  0  0  0  1 V2000", "Component 2 should NOT be chiral");
-			for (int i = 0; i < 9; ++i) std::getline(rxn_stream, line);
+			for (int i = 0; i < 9; ++i) { std::getline(rxn_stream, line); }
 			rinchi::unit_test::check_is_equal(line, "  5  5  0  0  1  0  0  0  0  0  1 V2000", "Component 3 should be chiral");
 		}
 
@@ -216,18 +220,18 @@ void RxnfileTests::chiral_flag_preservation()
 
 			// Check header lines for all components in rebuilt RXN file.
 			std::string line;
-			for (int i = 0; i < 10; ++i) std::getline(rxn_stream, line);
+			for (int i = 0; i < 10; ++i) { std::getline(rxn_stream, line); }
 			// Two hydrogens added by RInChI - therefore different atom+bond counts.
 			rinchi::unit_test::check_is_equal(line, "  8  7  0  0  0  0  0  0  0  0  1 V2000", "Component 1 should not be chiral");
 			// ... and also check a single line of coordinates.
 			std::getline(rxn_stream, line);
 			rinchi::unit_test::check_is_equal(line.substr(0, 32), "    0.0000    0.0000    0.0000 C", "Component 1 should not have coordinates");
-			for (int i = 0; i < 20; ++i) std::getline(rxn_stream, line);
+			for (int i = 0; i < 20; ++i) { std::getline(rxn_stream, line); }
 			// Metal disconnected by RInChI - therefore different bond count.
 			rinchi::unit_test::check_is_equal(line, "  2  0  0  0  0  0  0  0  0  0  2 V2000", "Component 2 should not be chiral");
 			// The above mol had the metal disconnected so there is one less bond line. But InChI added a charge to
 			// the Na and that adds back a line to the molfile. So we still have to read 9 lines forward.
-			for (int i = 0; i < 9; ++i) std::getline(rxn_stream, line);
+			for (int i = 0; i < 9; ++i) { std::getline(rxn_stream, line); }
 			// Two hydrogens added by RInChI - therefore different atom+bond counts.
 			rinchi::unit_test::check_is_equal(line, "  7  7  0  0  0  0  0  0  0  0  1 V2000", "Component 3 should not be chiral");
 		}
