@@ -98,10 +98,11 @@ namespace {
 			rinchi::rinchi_getline(file_text_stream, first_line);
 			file_text_stream.seekg(saved_stream_pos);
 
-			if (first_line == rinchi::MDL_TAG_RXN_BEGIN)
+			if (first_line == rinchi::MDL_TAG_RXN_BEGIN) {
 				file_format = RINCHI_INPUT_FORMAT_RXNFILE;
-			else
+			} else {
 				file_format = RINCHI_INPUT_FORMAT_RDFILE;
+			}
 		}
 
 		if (file_format == RINCHI_INPUT_FORMAT_RDFILE) {
@@ -112,24 +113,27 @@ namespace {
 			rinchi::MdlRxnfileReader rxn_reader;
 			rxn_reader.read_reaction(file_text_stream, rxn);
 		}
-		else
+		else {
 			throw rinchi::RInChIError(std::string("Unsupported input file format '") + file_format + "'.");
+		}
 	}
 
 	std::string calculate_key(rinchi::Reaction& rxn, const char* key_type)
 	{
 		char key_selector = *key_type;
-		if (key_selector == 0)
+		if (key_selector == 0) {
 			throw rinchi::RInChIError("Missing key selector: 'key_type' parameter must be 'L'(ong), 'S'(hort) or W(eb).");
+		}
 
-		if (key_selector == 'L')
+		if (key_selector == 'L') {
 			return rxn.rinchi_long_key();
-		else if (key_selector == 'S')
+		} else if (key_selector == 'S') {
 			return rxn.rinchi_short_key();
-		else if (key_selector == 'W')
+		} else if (key_selector == 'W') {
 			return rxn.rinchi_web_key();
-		else
+		} else {
 			throw rinchi::RInChIError("Invalid key selector. 'key_type' parameter must be 'L'(ong), 'S'(hort) or W(eb).");
+		}
 		
 		// TODO: Add check that 'key_type' is only one character long.
 	}
@@ -171,8 +175,9 @@ extern "C" {
 	)
 	{
 		BEGIN_EXCP_CODE
-		if (append_to_buffer == 0)
+		if (append_to_buffer == 0) {
 			reset_stream(cpp_input_buffer);
+		}
 
 		cpp_input_buffer << chunk;
 		END_EXCP_CODE 
@@ -183,8 +188,9 @@ extern "C" {
 	)
 	{
 		BEGIN_EXCP_CODE
-		if (append_to_buffer == 0)
+		if (append_to_buffer == 0) {
 			reset_stream(cpp_input_buffer);
+		}
 
 		cpp_input_buffer << input_file;
 
@@ -192,10 +198,12 @@ extern "C" {
 		load_reaction(input_format, cpp_input_buffer.str().c_str(), rxn);
 
 		std::string result = rxn.rinchi_string();
-		if (include_auxinfo != 0)
+		if (include_auxinfo != 0) {
 			result += '\n' + rxn.rinchi_auxinfo();
-		if ((int) result.length() > *out_data_maxlen)
+		}
+		if ((int) result.length() > *out_data_maxlen) {
 			throw std::runtime_error("RInChI output length exceeds max. length of Oracle-supplied character buffer.");
+		}
 
 		copy_result_to_oracharbuf(result.c_str(), out_data, out_data_maxlen);
 		END_EXCP_CODE 
@@ -206,8 +214,9 @@ extern "C" {
 	)
 	{
 		BEGIN_EXCP_CODE
-		if (append_to_buffer == 0)
+		if (append_to_buffer == 0) {
 			reset_stream(cpp_input_buffer);
+		}
 
 		cpp_input_buffer << input_file;
 
@@ -215,8 +224,9 @@ extern "C" {
 		load_reaction(input_format, cpp_input_buffer.str().c_str(), rxn);
 
 		std::string result = calculate_key(rxn, key_type);
-		if ((int) result.length() > *out_data_maxlen)
+		if ((int) result.length() > *out_data_maxlen) {
 			throw std::runtime_error("RInChI key output length exceeds max. length of Oracle-supplied character buffer.");
+		}
 
 		copy_result_to_oracharbuf(result.c_str(), out_data, out_data_maxlen);
 		END_EXCP_CODE
@@ -227,8 +237,9 @@ extern "C" {
 	)
 	{
 		BEGIN_EXCP_CODE
-		if (append_to_buffer == 0)
+		if (append_to_buffer == 0) {
 			reset_stream(cpp_input_buffer);
+		}
 
 		cpp_input_buffer << rinchi_string;
 
@@ -237,16 +248,19 @@ extern "C" {
 
 		std::string rinchi_input = cpp_input_buffer.str();
 		size_t lf_pos = rinchi_input.find('\n');
-		if (lf_pos != std::string::npos)
+		if (lf_pos != std::string::npos) {
 			rinchi_input.erase(lf_pos);
-		if (!rinchi_input.empty() && rinchi_input.at(rinchi_input.length() - 1) == '\r')
+		}
+		if (!rinchi_input.empty() && rinchi_input.at(rinchi_input.length() - 1) == '\r') {
 			rinchi_input.erase(rinchi_input.length() - 1);
+		}
 
 		reader.split_into_reaction(rinchi_input, "", rxn);
 
 		std::string result = calculate_key(rxn, key_type);
-		if ((int) result.length() > *out_data_maxlen)
+		if ((int) result.length() > *out_data_maxlen) {
 			throw std::runtime_error("RInChI key output length exceeds max. length of Oracle-supplied character buffer.");
+		}
 
 		copy_result_to_oracharbuf(result.c_str(), out_data, out_data_maxlen);
 		END_EXCP_CODE
@@ -259,8 +273,9 @@ extern "C" {
 		BEGIN_EXCP_CODE
 		std::string the_rauxinfo = rinchi_auxinfo;
 		// PL/SQL package will indicate a blank RAuxInfo field by passing a single space (to avoid NULLs).
-		if (the_rauxinfo == " ")
+		if (the_rauxinfo == " ") {
 			the_rauxinfo.clear();
+		}
 
 		rinchi::Reaction rxn;
 		rinchi::RInChIReader reader;
