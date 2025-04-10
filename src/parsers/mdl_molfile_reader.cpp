@@ -291,10 +291,11 @@ void MdlMolfileReader::read_V2000_molecule_from_stream(int atom_count, int bond_
 			int valence = 0;
 			std::string valence_code;
 			// Set default valence in case of SciTegic abridged lines.
-			if (m_current_line.length() >= 51)
+			if (m_current_line.length() >= 51) {
 				valence_code = m_current_line.substr(48, 3);
-			else
+			} else {
 				valence_code = "  0";
+			}
 			if (valence_code != "  0") {
 				valence = str2int(valence_code);
 #ifdef IN_RINCHI_TEST_SUITE
@@ -365,15 +366,16 @@ void MdlMolfileReader::read_V2000_molecule_from_stream(int atom_count, int bond_
 		prop_line_read_count++;
 
 		property_tag = m_current_line.substr(0, 6);
-		if (property_tag == MDL_TAG_CHARGE)
+		if (property_tag == MDL_TAG_CHARGE) {
 			read_V2000_charges(m_current_line, atoms_with_charges_or_radicals, result);
-		if (property_tag == MDL_TAG_RADICAL)
+		}
+		if (property_tag == MDL_TAG_RADICAL) {
 			read_V2000_radicals(m_current_line, atoms_with_charges_or_radicals, result);
-		else if (property_tag == MDL_TAG_ISOTOPE)
+		} else if (property_tag == MDL_TAG_ISOTOPE) {
 			read_V2000_isotopes(m_current_line, atoms_with_mass_diffs, result);
 		// The old-style properties atom alias and group abbreviation require 
 		// us to skip the following line that holds the data for the tags.
-		else if (
+		} else if (
 			property_tag.substr(0, 3) == MDL_TAG_ATOM_ALIAS
 			|| property_tag.substr(0, 3) == MDL_TAG_GROUP_ABBREVIATION
 		) {
@@ -382,15 +384,17 @@ void MdlMolfileReader::read_V2000_molecule_from_stream(int atom_count, int bond_
 			prop_line_read_count++;
 		}
 		// End of molfile ?
-		else if (m_current_line == MDL_TAG_MOLFILE_END)
+		else if (m_current_line == MDL_TAG_MOLFILE_END) {
 			break;
 		// Other property lines will just be ignored.
-		else
+		} else {
 			ignore_tag();
+		}
 	}
 
-	if (has_version_stamp && m_current_line != MDL_TAG_MOLFILE_END)
+	if (has_version_stamp && m_current_line != MDL_TAG_MOLFILE_END) {
 		check(false, "Missing '" + MDL_TAG_MOLFILE_END + "' at end - instead found '" + m_current_line + "'");
+	}
 
 	// Set any fixed valences.
 	for (ValenceMap::const_iterator val = atoms_with_special_valences.begin(); val != atoms_with_special_valences.end(); val++) {
@@ -404,8 +408,9 @@ namespace {
 
 	void strip_V30_prefix(string& s)
 	{
-		if (s.substr(0, MDL_TAG_V30_LINE.length()) != MDL_TAG_V30_LINE)
+		if (s.substr(0, MDL_TAG_V30_LINE.length()) != MDL_TAG_V30_LINE) {
 			throw MdlMolfileReaderError ("Invalid V3000 line - must start with '" + MDL_TAG_V30_LINE + "'.");
+		}
 		s.erase(0, MDL_TAG_V30_LINE.length());
 	}
 
@@ -417,8 +422,9 @@ namespace {
 			value = read_int(c);
 			return true;
 		}
-		else
+		else {
 			return false;
+		}
 	}
 
 	BondStereo V3000_stereo_code_to_BondStereo(int stereo)
@@ -437,35 +443,39 @@ namespace {
 void MdlMolfileReader::read_V3000_molecule_from_stream(bool is_chiral, std::istream& input_stream, ReactionComponent& result)
 {
 	get_next_line(input_stream);
-	if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_CTAB_BEGIN)
+	if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_CTAB_BEGIN) {
 		throw MdlMolfileReaderError ("Expected V3000 CTAB block start, but got '" + m_current_line + "'");
+	}
 	get_next_line(input_stream);
 
-	if (m_current_line.substr(0, 13) != MDL_TAG_V30_LINE + MDL_TAG_V30_COUNTS)
+	if (m_current_line.substr(0, 13) != MDL_TAG_V30_LINE + MDL_TAG_V30_COUNTS) {
 		throw MdlMolfileReaderError ("Expected a V3000 CTAB COUNTS line, but got '" + m_current_line + "'");
+	}
 	const char* c = m_current_line.c_str() + 13;
-	while (*c == ' ' && *c != 0) c++;
+	while (*c == ' ' && *c != 0) { c++; }
 	int atom_count = read_int(c);
-	while (*c == ' ' && *c != 0) c++;
+	while (*c == ' ' && *c != 0) { c++; }
 	int bond_count = read_int(c);
 	// Skip number of Sgroups.
-	while (*c == ' ' && *c != 0) c++;
+	while (*c == ' ' && *c != 0) { c++; }
 	int chiral_flag = read_int(c);
 	// Skip number of 3D constraints.
-	while (*c == ' ' && *c != 0) c++;
+	while (*c == ' ' && *c != 0) { c++; }
 	chiral_flag = read_int(c);
 	// Read actual chiral flag.
-	while (*c == ' ' && *c != 0) c++;
+	while (*c == ' ' && *c != 0) { c++; }
 	chiral_flag = read_int(c);
 	check_range(chiral_flag, 0, 1, "V3000 chiral flag");
-	if (is_chiral && (chiral_flag != 1))
+	if (is_chiral && (chiral_flag != 1)) {
 		throw MdlMolfileReaderError("Inconsistent chiral flag: V2000 and V3000 count line disagree on value.");
+	}
 
 	result.initialize(atom_count, is_chiral);
 
 	get_next_line(input_stream);
-	if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_ATOM_BEGIN)
+	if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_ATOM_BEGIN) {
 		throw MdlMolfileReaderError ("Expected V3000 ATOM block start, but got '" + m_current_line + "'");
+	}
 
 	// Molecules that only consist of a special atom are considered equivalent to No-Structures.
 	if (atom_count == 1) {
@@ -478,12 +488,14 @@ void MdlMolfileReader::read_V3000_molecule_from_stream(bool is_chiral, std::istr
 		line >> dummy_atom_number >> atom_symbol;
 		if (is_special_atom(atom_symbol)) {
 			result.initialize(0, is_chiral);
-			while (m_current_line != MDL_TAG_MOLFILE_END)
+			while (m_current_line != MDL_TAG_MOLFILE_END) {
 				get_next_line(input_stream);
+			}
 			return;
 		}
-		else
+		else {
 			input_stream.seekg(saved_pos);
+		}
 	}
 
 	// Read atoms.
@@ -501,8 +513,9 @@ void MdlMolfileReader::read_V3000_molecule_from_stream(bool is_chiral, std::istr
 			stringstream line (m_current_line);
 			line >> atom_number >> atom_symbol >> x >> y >> z >> aa_map;
 
-			if (atom_number != i)
+			if (atom_number != i) {
 				throw MdlMolfileReaderError ("Cowardly refusing to read V3000 molfile requiring a correspondance matrix for atom numbers - this is not supported yet");
+			}
 
 			int charge = 0;
 			int valence = 0;
@@ -529,13 +542,15 @@ void MdlMolfileReader::read_V3000_molecule_from_stream(bool is_chiral, std::istr
 		check(false, "Invalid atom (" + string(e.what()) + ")");
 	}
 	get_next_line(input_stream);
-	if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_ATOM_END)
+	if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_ATOM_END) {
 		throw MdlMolfileReaderError ("Expected V3000 ATOM block end, but got '" + m_current_line + "'");
+	}
 
 	if (bond_count > 0) {
 		get_next_line(input_stream);
-		if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_BOND_BEGIN)
+		if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_BOND_BEGIN) {
 			throw MdlMolfileReaderError ("Expected V3000 BOND block start, but got '" + m_current_line + "'");
+		}
 
 		// Read bonds.
 		int bond_number;
@@ -550,8 +565,9 @@ void MdlMolfileReader::read_V3000_molecule_from_stream(bool is_chiral, std::istr
 				stringstream line (m_current_line);
 				line >> bond_number >> bond_cardinality >> from_atom_number >> to_atom_number;
 
-				if (bond_number != i)
+				if (bond_number != i) {
 					throw MdlMolfileReaderError ("Refusing to read V3000 molfile requiring a correspondance matrix for bond numbers - this is not supported yet");
+				}
 
 				bond_stereo = RINCHI_BOND_STEREO_NONE;
 				line >> key_value;
@@ -572,8 +588,9 @@ void MdlMolfileReader::read_V3000_molecule_from_stream(bool is_chiral, std::istr
 			check(false, "Invalid bond (" + string(e.what()) + ")");
 		}
 		get_next_line(input_stream);
-		if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_BOND_END)
+		if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_BOND_END) {
 			throw MdlMolfileReaderError ("Expected V3000 BOND block end, but got '" + m_current_line + "'.");
+		}
 	}
 
 	// Skip any collections, S-groups, what have you...
@@ -588,12 +605,14 @@ void MdlMolfileReader::read_V3000_molecule_from_stream(bool is_chiral, std::istr
 	}
 
 	// We should now be at the end of the CTAB block.
-	if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_CTAB_END)
+	if (m_current_line != MDL_TAG_V30_LINE + MDL_TAG_V30_BLOCK_CTAB_END) {
 		throw MdlMolfileReaderError ("Expected V3000 CTAB block end, but got '" + m_current_line + "'.");
+	}
 
 	get_next_line(input_stream);
-	if (m_current_line != MDL_TAG_MOLFILE_END)
+	if (m_current_line != MDL_TAG_MOLFILE_END) {
 		check(false, "Missing '" + MDL_TAG_MOLFILE_END + "' at end - instead found '" + m_current_line + "'");
+	}
 }
 
 void MdlMolfileReader::read_molecule_from_stream(std::istream& input_stream, ReactionComponent& result)
@@ -610,23 +629,26 @@ void MdlMolfileReader::read_molecule_from_stream(std::istream& input_stream, Rea
 		get_next_line(input_stream);
 		// Not having the V2000 or V3000 version stamp is allowed - for backwards
 		// compatibility with very old molfiles.
-		if (m_current_line.length() == 33)
+		if (m_current_line.length() == 33) {
 			has_version_stamp = false;
-		else
+		} else {
 			check(m_current_line.length() == 39, "Invalid header line - must be 39 characters long.");
+		}
 		int atom_count = str2int(m_current_line.substr(0, 3));
 		int bond_count = str2int(m_current_line.substr(3, 3));
 		int prop_line_count = 0;
-		if (!has_version_stamp)
+		if (!has_version_stamp) {
 			prop_line_count = str2int(m_current_line.substr(30, 3));
+		}
 
 		char chiral_flag = m_current_line[14];
 		check(chiral_flag == '0' || chiral_flag == '1', "Invalid chiral flag (must be '0' or '1').");
 		bool is_chiral = chiral_flag == '1';
 
 		// Check that line ends with "V2000" or "V3000" - if a version stamp is present
-		if (has_version_stamp)
+		if (has_version_stamp) {
 			m_current_line.erase(0, m_current_line.length() - 5);
+		}
 
 		if (!has_version_stamp || m_current_line == MDL_TAG_V2000) {
 			read_V2000_molecule_from_stream(atom_count, bond_count, is_chiral, has_version_stamp, prop_line_count, input_stream, result);
@@ -655,8 +677,9 @@ void MdlMolfileReader::read_molecule(std::istream& input_stream, ReactionCompone
 	m_input_name = "std::istream";
 	m_line_number = lines_already_read;
 
-	if (!input_stream)
+	if (!input_stream) {
 		throw_error("Input mol stream is not open");
+	}
 
 	read_molecule_from_stream(input_stream, result);
 }
@@ -667,8 +690,9 @@ void MdlMolfileReader::read_molecule(const std::string& file_name, ReactionCompo
 	m_line_number = lines_already_read;
 
 	ifstream input_stream ( file_name.c_str() );
-	if (!input_stream)
+	if (!input_stream) {
 		throw_error("Can't open input mol file '" + file_name + "'");
+	}
 
 	read_molecule_from_stream(input_stream, result);
 }
