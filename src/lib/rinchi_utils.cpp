@@ -168,7 +168,9 @@ int read_int(std::string::const_iterator& c, std::string::const_iterator stop_c)
 		c++;
 	}
 	if (start == c)
+	{
 		throw BadConversion("Invalid integer. Non-digit or end-of-string reached.");
+	}
 
 	if (is_negative)
 		return -result;
@@ -182,7 +184,9 @@ int read_int(const char*& c)
 	bool is_negative = false;
 
 	while (isspace(*c))
+	{
 		c++;
+	}
 	const char* start = c;
 	if (*c == '+')
 		c++;
@@ -195,7 +199,9 @@ int read_int(const char*& c)
 		c++;
 	}
 	if (start == c)
+	{
 		throw BadConversion("Invalid integer. Non-digit or end-of-string reached.");
+	}
 
 	if (is_negative)
 		return -result;

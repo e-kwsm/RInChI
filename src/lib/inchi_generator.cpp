@@ -222,21 +222,23 @@ void InChIGenerator::validate_inchi(const std::string& inchi_string)
 			std::string err_msg;
 			while (true) {
 				std::getline(log_lines, line);
-				if (!log_lines)
-				{
+				if (!log_lines) {
 					break;
 				}
-				if (!err_msg.empty())
+				if (!err_msg.empty()) {
 					err_msg += "\n" + line;
+				}
 				else {
-					if (line.find("error") != std::string::npos)
+					if (line.find("error") != std::string::npos) {
 						err_msg = line;
+					}
 				}
 			}
-			if (err_msg.empty())
+			if (err_msg.empty()) {
 				throw InChIGeneratorError("Unknown error validating InChI.");
-			else
+			} else {
 				throw InChIGeneratorError(err_msg);
+			}
 		}
 	}
 	lib_FreeINCHI(&inchi_output);
@@ -382,7 +384,9 @@ std::string InChIToStructureConverter::to_molfile(const std::string& inchi_strin
 	std::string result = result_start;
 	// Remove trailing "$$$$\n" line from SD record, giving us the molfile only.
 	if (result.length() < 5)
+	{
 		throw InChIGeneratorError ("Output from GetINCHI() is not recognized as an SD record.");
+	}
 	result.erase(result.length() - 5);
 
 	return result;

@@ -84,7 +84,9 @@ void MdlRxnfileReader::read_reaction_from_stream(std::istream& input_stream, Rea
 		for (int i = 0; i < reactant_count; i++) {
 			get_next_line(input_stream);
 			if (m_current_line != MDL_TAG_RXN_COMPONENT_START)
+			{
 				throw MdlRxnfileReaderError("Reaction components must be delimited by a '" + MDL_TAG_RXN_COMPONENT_START + "' line.");
+			}
 			ReactionComponent* rc = result.add_reactant();
 			mr.read_molecule(input_stream, *rc);
 			m_line_number += mr.lines_read();

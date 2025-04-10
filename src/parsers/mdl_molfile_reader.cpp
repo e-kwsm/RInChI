@@ -269,7 +269,9 @@ void MdlMolfileReader::read_V2000_molecule_from_stream(int atom_count, int bond_
 					radical = 2;
 				}
 				else
+				{
 					charge = '4' - charge_code;
+				}
 
 				atoms_with_charges_or_radicals.push_back( &(result.inchi_input().atom[i]) );
 			}
@@ -308,7 +310,9 @@ void MdlMolfileReader::read_V2000_molecule_from_stream(int atom_count, int bond_
 #endif
 				if (valence != 0) {
 					if (valence == 15)
+					{
 						valence = 0;
+					}
 					atoms_with_special_valences.insert(std::make_pair( &(result.inchi_input().atom[i]), valence ));
 				}
 			}
@@ -338,7 +342,9 @@ void MdlMolfileReader::read_V2000_molecule_from_stream(int atom_count, int bond_
 			// often produce molfiles that use the aromatic bond in rings instead of storing rings in
 			// kekulized form.
 			if (bond_cardinality >= 5)
+			{
 				throw MdlMolfileReaderError ("SSS query bonds are not allowed.");
+			}
 
 			inchi_add_bond(result.inchi_input(), from_number - 1, to_number - 1, bond_cardinality, V2000_stereo_code_to_BondStereo(stereo_code));
 		}
@@ -352,7 +358,9 @@ void MdlMolfileReader::read_V2000_molecule_from_stream(int atom_count, int bond_
 	std::string property_tag;
 	while (!input_stream.eof()) {
 		if (!has_version_stamp && prop_line_read_count >= prop_line_count)
+		{
 			break;
+		}
 		get_next_line(input_stream);
 		prop_line_read_count++;
 
