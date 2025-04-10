@@ -103,10 +103,11 @@ namespace {
 			rinchi::rinchi_getline(file_text_stream, first_line);
 			file_text_stream.seekg(saved_stream_pos);
 
-			if (first_line == rinchi::MDL_TAG_RXN_BEGIN)
+			if (first_line == rinchi::MDL_TAG_RXN_BEGIN) {
 				file_format = RINCHI_INPUT_FORMAT_RXNFILE;
-			else
+			} else {
 				file_format = RINCHI_INPUT_FORMAT_RDFILE;
+			}
 		}
 
 		if (file_format == RINCHI_INPUT_FORMAT_RDFILE) {
@@ -117,8 +118,9 @@ namespace {
 			rinchi::MdlRxnfileReader rxn_reader;
 			rxn_reader.read_reaction(file_text_stream, rxn, in_force_equilibrium);
 		}
-		else
+		else {
 			throw rinchi::RInChIError(std::string("Unsupported input file format '") + file_format + "'.");
+		}
 	}
 
 	void output_component_as_string(const std::string& prefix, rinchi::ReactionComponent& rc, std::ostream& output_stream)
@@ -129,17 +131,19 @@ namespace {
 	std::string calculate_key(rinchi::Reaction& rxn, const char* key_type)
 	{
 		char key_selector = *key_type;
-		if (key_selector == 0)
+		if (key_selector == 0) {
 			throw rinchi::RInChIError("Missing key selector: 'key_type' parameter must be 'L'(ong), 'S'(hort) or W(eb).");
+		}
 
-		if (key_selector == 'L')
+		if (key_selector == 'L') {
 			return rxn.rinchi_long_key();
-		else if (key_selector == 'S')
+		} else if (key_selector == 'S') {
 			return rxn.rinchi_short_key();
-		else if (key_selector == 'W')
+		} else if (key_selector == 'W') {
 			return rxn.rinchi_web_key();
-		else
+		} else {
 			throw rinchi::RInChIError("Invalid key selector. 'key_type' parameter must be 'L'(ong), 'S'(hort) or W(eb).");
+		}
 	}
 
 }
@@ -199,8 +203,9 @@ extern "C" {
 			rinchi::MdlRxnfileWriter rxn_writer;
 			rxn_writer.write_reaction(rxn, file_text_stream);
 		}
-		else
+		else {
 			throw rinchi::RInChIError(std::string("Unsupported output file format '") + output_format + "'.");
+		}
 
 		cpp_result1 = file_text_stream.str();
 		*out_file_text = cpp_result1.c_str();
@@ -226,10 +231,11 @@ extern "C" {
 		switch (rxn.directionality())
 		{
 		case rinchi::rdDirectional:
-			if (reverse_rxn_dir)
+			if (reverse_rxn_dir) {
 				inchi_stream << "D:" << rinchi::DIRECTION_REVERSE << "\n";
-			else
+			} else {
 				inchi_stream << "D:" << rinchi::DIRECTION_FORWARD << "\n";
+			}
 			break;
 		case rinchi::rdEquilibrium:
 			inchi_stream <<  "D:" << rinchi::DIRECTION_EQUILIBRIUM << "\n";
@@ -241,19 +247,23 @@ extern "C" {
 		// Add comma-separated No-Structure counts. Always Reactants first, then Products, then Agents.
 		inchi_stream << "N:";
 		for (int i = 0; i < RINCHI_NUM_GROUPS; i++) {
-			if (i != 0)
+			if (i != 0) {
 				inchi_stream << ",";
+			}
 			inchi_stream << rxn.nostructure_count(i);
 		}
 		inchi_stream << "\n";
 
 		// Add InChI and AuxInfo for all Reactants, Products, and Agents.
-		for (rinchi::ReactionComponentList::const_iterator rc = rxn.reactants().begin(); rc != rxn.reactants().end(); rc++)
+		for (rinchi::ReactionComponentList::const_iterator rc = rxn.reactants().begin(); rc != rxn.reactants().end(); rc++) {
 			output_component_as_string("R:", **rc, inchi_stream);
-		for (rinchi::ReactionComponentList::const_iterator rc = rxn.products().begin(); rc != rxn.products().end(); rc++)
+		}
+		for (rinchi::ReactionComponentList::const_iterator rc = rxn.products().begin(); rc != rxn.products().end(); rc++) {
 			output_component_as_string("P:", **rc, inchi_stream);
-		for (rinchi::ReactionComponentList::const_iterator rc = rxn.agents().begin(); rc != rxn.agents().end(); rc++)
+		}
+		for (rinchi::ReactionComponentList::const_iterator rc = rxn.agents().begin(); rc != rxn.agents().end(); rc++) {
 			output_component_as_string("A:", **rc, inchi_stream);
+		}
 
 		cpp_result1 = inchi_stream.str();
 		*out_inchis_text = cpp_result1.c_str();
@@ -271,9 +281,9 @@ extern "C" {
         std::string reactant_inchis_str;
         std::string product_inchis_str;
         std::string agent_inchis_str;
-        if (reactant_inchis != nullptr) reactant_inchis_str = reactant_inchis;
-        if (product_inchis  != nullptr) product_inchis_str  = product_inchis;
-        if (agent_inchis    != nullptr) agent_inchis_str    = agent_inchis;
+        if (reactant_inchis != nullptr) { reactant_inchis_str = reactant_inchis; }
+        if (product_inchis  != nullptr) { product_inchis_str  = product_inchis; }
+        if (agent_inchis    != nullptr) { agent_inchis_str    = agent_inchis; }
 
         reader.add_inchis_to_reaction(reactant_inchis_str, product_inchis_str, agent_inchis_str, rxn);
 
@@ -299,10 +309,12 @@ extern "C" {
 		// Cut input at first LF or CR/LF.
 		std::string rinchi_input = rinchi_string;
 		size_t lf_pos = rinchi_input.find('\n');
-		if (lf_pos != std::string::npos)
+		if (lf_pos != std::string::npos) {
 			rinchi_input.erase(lf_pos);
-		if (!rinchi_input.empty() && rinchi_input.at(rinchi_input.length() - 1) == '\r')
+		}
+		if (!rinchi_input.empty() && rinchi_input.at(rinchi_input.length() - 1) == '\r') {
 			rinchi_input.erase(rinchi_input.length() - 1);
+		}
 
 		reader.split_into_reaction(rinchi_input, "", rxn);
 
