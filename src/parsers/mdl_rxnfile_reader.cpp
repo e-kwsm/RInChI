@@ -56,7 +56,9 @@ void MdlRxnfileReader::read_reaction_from_stream(std::istream& input_stream, Rea
 	try {
 		get_next_line(input_stream);
 		if (m_current_line != MDL_TAG_RXN_BEGIN)
+		{
 			throw MdlRxnfileReaderError("RXN files must begin with a '" + MDL_TAG_RXN_BEGIN + "' line.");
+		}
 
 		// Skip name line.
 		get_next_line(input_stream);
@@ -73,7 +75,9 @@ void MdlRxnfileReader::read_reaction_from_stream(std::istream& input_stream, Rea
 		int product_count  = str2int(m_current_line.substr(3, 3));
         int agent_count = -1;
         if (m_current_line.length() == 9)
+        {
             agent_count = str2int(m_current_line.substr(6, 3));
+        }
 
 		MdlMolfileReader mr;
 

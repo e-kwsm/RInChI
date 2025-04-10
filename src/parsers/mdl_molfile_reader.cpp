@@ -151,7 +151,9 @@ namespace {
 		**/
 		// Clear any mass diffs already set in atom block - "M  ISO" lines take precedence according to ctfile.pdf.
 		for (AtomPointerList::iterator iso_atom = atom_block_mass_diffs.begin(); iso_atom != atom_block_mass_diffs.end(); iso_atom++)
+		{
 			(*iso_atom)->isotopic_mass = 0;
+		}
 		atom_block_mass_diffs.clear();
 
 		int num_atoms = str2int( current_line.substr(6, 3) );
@@ -188,7 +190,9 @@ namespace {
 		for (int i = 0; i < atom->num_bonds; i++) {
 			int bond_cardinality = atom->bond_type[i];
 			if (bond_cardinality > 3)
+			{
 				throw MdlMolfileReaderError("Refusing to guess valence of alternating bond (InChI bond type 4 or greater).");
+			}
 			used_valences += bond_cardinality;
 		}
 		// InChI accepts exceeded valences, so just log a warning. In case of exceeded valences, force
@@ -218,11 +222,15 @@ void MdlMolfileReader::read_V2000_molecule_from_stream(int atom_count, int bond_
 		if (is_special_atom(atom_symbol)) {
 			result.initialize(0, is_chiral);
 			while (m_current_line != MDL_TAG_MOLFILE_END)
+			{
 				get_next_line(input_stream);
+			}
 			return;
 		}
 		else
+		{
 			input_stream.seekg(saved_pos);
+		}
 	}
 
 	result.initialize(atom_count, is_chiral);
@@ -257,7 +265,9 @@ void MdlMolfileReader::read_V2000_molecule_from_stream(int atom_count, int bond_
 				// charges according to ctfiles.pdf:
 				// 0 = uncharged or value other than these, 1 = +3, 2 = +2, 3 = +1, 4 = doublet radical, 5 = -1, 6 = -2, 7 = -3
 				if (charge_code == '4')
+				{
 					radical = 2;
+				}
 				else
 					charge = '4' - charge_code;
 

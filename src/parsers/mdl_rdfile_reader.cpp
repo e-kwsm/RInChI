@@ -60,7 +60,9 @@ namespace {
 	{
 		for (StringVector::iterator s = sv.begin(); s != sv.end(); s++) {
 			if (!s->empty() && s->at(0) != ':')
+			{
 				s->insert(s->begin(), ':');
+			}
 		}
 	}
 }
@@ -103,7 +105,9 @@ void MdlRDfileReader::read_reaction_from_stream(std::istream& input_stream, Reac
 		while (m_current_line.substr(0, MDL_RDTAG_RFMT.length()) != MDL_RDTAG_RFMT) {
 			skipped_line_count++;
 			if (skipped_line_count >= 1000)
+			{
 				throw MdlRDfileReaderError("RD file section must contain an '" + MDL_RDTAG_RFMT + "' line.");
+			}
 			get_next_line(input_stream);
 		}
 
@@ -127,7 +131,9 @@ void MdlRDfileReader::read_reaction_from_stream(std::istream& input_stream, Reac
 		while (input_stream) {
 			get_next_line(input_stream);
 			if (m_current_line.substr(0, MDL_RDTAG_RFMT.length()) == MDL_RDTAG_RFMT)
+			{
 				break;
+			}
 			if (m_current_line == MDL_RDLINE_MFMT) {
 				// Check previous line and check if the structure looks like a
 				// reactant or product (non-agent).

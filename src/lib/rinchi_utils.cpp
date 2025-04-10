@@ -121,7 +121,9 @@ double str2double(const std::string& s, bool failIfLeftoverChars)
 	double x;
 	char c;
 	if (!(i >> x) || (failIfLeftoverChars && i.get(c)))
+	{
 		throw BadConversion("str2double(\"" + s + "\")");
+	}
 	return x;
 }
 
@@ -132,7 +134,9 @@ int str2int(const std::string& s, bool failIfLeftoverChars)
 	int x;
 	char c;
 	if (!(i >> x) || (failIfLeftoverChars && i.get(c)))
+	{
 		throw BadConversion("str2int: \"" + s + "\" is not a valid integer.");
+	}
 	return x;
 }
 
@@ -147,10 +151,14 @@ int read_int(std::string::const_iterator& c, std::string::const_iterator stop_c)
 	bool is_negative = false;
 
 	while (c != stop_c && isspace(*c))
+	{
 		c++;
+	}
 	std::string::const_iterator start = c;
 	if (c != stop_c && *c == '+')
+	{
 		c++;
+	}
 	else if (c != stop_c && *c == '-') {
 		is_negative = true;  c++;
 	}
