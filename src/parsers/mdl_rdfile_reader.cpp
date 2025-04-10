@@ -151,12 +151,13 @@ void MdlRDfileReader::read_reaction_from_stream(std::istream& input_stream, Reac
 					}
 				}
 				if (next_var_no != -1) {
-					if (variation_no == -1)
+					if (variation_no == -1) {
 						variation_no = next_var_no;
-					else {
+					} else {
 						// Stop reading agents when variation number changes.
-						if (next_var_no != variation_no)
+						if (next_var_no != variation_no) {
 							break;
+						}
 					}
 				}
 
@@ -223,8 +224,9 @@ void MdlRDfileReader::read_reaction_from_stream(std::istream& input_stream, Reac
 		throw_error(e);
 	}
 
-	if (force_equilibrium)
+	if (force_equilibrium) {
 		result.set_directionality(rdEquilibrium);
+	}
 }
 
 void MdlRDfileReader::read_reaction(std::istream& input_stream, Reaction& result, bool force_equilibrium, int lines_already_read)
@@ -232,8 +234,9 @@ void MdlRDfileReader::read_reaction(std::istream& input_stream, Reaction& result
 	m_input_name = "std::istream";
 	m_line_number = lines_already_read;
 
-	if (!input_stream)
+	if (!input_stream) {
 		throw_error("Input RD file stream is not open");
+	}
 
 	read_reaction_from_stream(input_stream, result, force_equilibrium);
 }
@@ -244,8 +247,9 @@ void MdlRDfileReader::read_reaction(const std::string& file_name, Reaction& resu
 	m_line_number = lines_already_read;
 
 	ifstream input_stream ( file_name.c_str() );
-	if (!input_stream)
+	if (!input_stream) {
 		throw_error("Can't open input RD file '" + file_name + "'");
+	}
 
 	read_reaction_from_stream(input_stream, result, force_equilibrium);
 }
