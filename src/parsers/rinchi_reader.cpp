@@ -73,8 +73,9 @@ namespace rinchi {
 	public:
 		static void create_components_from_inchigroup(const std::string& inchigroup, ReactionComponentList& components)
 		{
-			if (inchigroup.empty())
+			if (inchigroup.empty()) {
 				return;
+			}
 
 			size_t delim_pos = 0;
 			size_t token_start = 0;
@@ -91,8 +92,9 @@ namespace rinchi {
 
                 trim_right(inchi_string, " ");
                 trim_left(inchi_string, " ");
-                if (inchi_string.find_first_of(" \n\t") != std::string::npos)
+                if (inchi_string.find_first_of(" \n\t") != std::string::npos) {
                     throw RInChIReaderError("Invalid trailing text in component InChI '" + inchi_string + "'.");
+                }
 
 				inchi_string = INCHI_STD_HEADER + inchi_string;
 				// Validate and cleanup InChI input.
@@ -103,15 +105,17 @@ namespace rinchi {
 				ReactionComponent* tmp_cmp = cmp.release();
 				tmp_cmp->m_inchi_string = inchi_string;
 
-				if (delim_pos == std::string::npos)
+				if (delim_pos == std::string::npos) {
 					break;
+				}
 			}
 		}
 
 		static void add_auxinfo_to_components(const std::string& auxinfogroup, ReactionComponentList& components, const std::string& group_name)
 		{
-			if (auxinfogroup.empty())
+			if (auxinfogroup.empty()) {
 				return;
+			}
 
 			int cmp_idx = 0;
 			size_t delim_pos = 0;
@@ -127,8 +131,9 @@ namespace rinchi {
 					auxinfo = auxinfogroup.substr(token_start);
 				}
 
-				if (cmp_idx >= (int) components.size())
+				if (cmp_idx >= (int) components.size()) {
 					throw RInChIReaderError ("RAuxInfo contains too many elements in the " + group_name + ".");
+				}
 				ReactionComponent* cmp = components.at(cmp_idx);
 
 				auxinfo = INCHI_AUXINFO_HEADER + auxinfo;
@@ -142,15 +147,17 @@ namespace rinchi {
 				cmp->m_inchi_auxinfo = auxinfo;
 				cmp_idx++;
 
-				if (delim_pos == std::string::npos)
+				if (delim_pos == std::string::npos) {
 					break;
+				}
 			}
 		}
 
         static void read_components(const std::string& inchi_lines, ReactionComponentList& components)
         {
-            if (inchi_lines.empty())
+            if (inchi_lines.empty()) {
                 return;
+            }
 
             std::stringstream inchi_lines_stream (inchi_lines);
             std::string line;
@@ -161,14 +168,16 @@ namespace rinchi {
             ReactionComponent* c = nullptr;
             while (inchi_lines_stream) {
                 rinchi_getline(inchi_lines_stream, line);
-                if (blank_line_detected && inchi_lines_stream)
+                if (blank_line_detected && inchi_lines_stream) {
                     throw RInChIReaderError("Line " + int2str(line_no) + ": Unexpected trailing data; expected an EOF after previous blank line.");
+                }
                 // ' line.rfind("ABC", 0) == 0 ' is equivalent to ' line.starts_with("ABC") '.
                 if (line.rfind("InChI=", 0) == 0) {
                     if (c == nullptr || !c->inchi_string().empty()) {
                         // Check previously added component, if any.
-                        if (c != nullptr)
+                        if (c != nullptr) {
                             validate_reaction_component_inchi_strings(c);
+                        }
                         // Add new component to reaction.
                         c = new ReactionComponent();
                         components.push_back(c);
