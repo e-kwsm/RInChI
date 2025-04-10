@@ -58,19 +58,22 @@ void RDfileTests::standard_files()
 
 	int test_count = 0;
 	for (boost::filesystem::directory_iterator testfile(current_dir); testfile != end_itr; testfile++) {
-		if (!boost::filesystem::is_regular_file(testfile->path()))
+		if (!boost::filesystem::is_regular_file(testfile->path())) {
 			continue;
+}
 		std::string test_filename = testfile->path().string();
-		if (test_filename.substr(test_filename.length() - 4, 4) != ".rdf")
+		if (test_filename.substr(test_filename.length() - 4, 4) != ".rdf") {
 			continue;
+		}
 
 		test_count++;
 
 		std::string expected_rinchi_string;
 		std::string test_filename_rinchis = test_filename + ".rinchi_strings.txt";
 		std::ifstream expected_file ( test_filename_rinchis.c_str() );
-		if (!expected_file)
+		if (!expected_file) {
 			throw rinchi::unit_test::TestFailure (test_filename_rinchis + " does not exist.");
+		}
 		rinchi::rinchi_getline(expected_file, expected_rinchi_string);
 
 		rinchi::Reaction rxn;
@@ -93,8 +96,9 @@ namespace {
 
 		std::string test_filename_rinchis = test_filename + ".rinchi_strings.txt";
 		std::ifstream expected_file ( test_filename_rinchis.c_str() );
-		if (!expected_file)
+		if (!expected_file) {
 			throw rinchi::unit_test::TestFailure (test_filename_rinchis + " does not exist.");
+		}
 		rinchi::rinchi_getline(expected_file, expected_rinchi_string);
 
 		boost::replace_all(expected_rinchi_string, rinchi::DIRECTION_TAG + rinchi::DIRECTION_FORWARD, rinchi::DIRECTION_TAG + rinchi::DIRECTION_EQUILIBRIUM);
