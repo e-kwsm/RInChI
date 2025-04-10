@@ -221,7 +221,7 @@ void RInChIReader::split_into_reaction(const std::string& rinchi_string, const s
 	std::string second_group;
 	std::string third_group;
 
-	std::string* last_group = NULL;
+	std::string* last_group = nullptr;
 
 	size_t found_delim_pos = rinchi_string.find(DELIM_GROUP);
 	// First group may be all there is.
@@ -309,7 +309,7 @@ void RInChIReader::split_into_reaction(const std::string& rinchi_string, const s
 	else
 		rxn.m_directionality = rdDirectional;
 
-	if (is_reverse_direction != NULL)
+	if (is_reverse_direction != nullptr)
 		*is_reverse_direction = (direction_flag == DIRECTION_REVERSE);
 	rxn.m_reverse_output = (direction_flag == DIRECTION_REVERSE);
 

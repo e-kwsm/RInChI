@@ -207,7 +207,7 @@ void MdlRDfileReader::read_reaction_from_stream(std::istream& input_stream, Reac
 
 				if (drop_agent) {
 					result.delete_agent(agent);
-					agent = NULL;
+					agent = nullptr;
 				}
 			}
 			prev_line = m_current_line;

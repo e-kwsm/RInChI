@@ -57,7 +57,7 @@ namespace {
 	std::string rdfile_timestamp()
 	{
 		// Get current time.
-		time_t t = time(0);
+		time_t t = time(nullptr);
 		std::tm current_time;
 	#ifdef ON_WINDOWS
 		int err = localtime_s(&current_time, &t);

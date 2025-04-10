@@ -73,7 +73,7 @@ const std::string demangled_class_name(std::string class_name)
 	// Demangle typeid to get real class name.
 	int status;
 	size_t length;
-	char* real_name = abi::__cxa_demangle(class_name.c_str(), 0, &length, &status);
+	char* real_name = abi::__cxa_demangle(class_name.c_str(), nullptr, &length, &status);
 	if (real_name)
 	  class_name = real_name;
 	std::free(real_name);
