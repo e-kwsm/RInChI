@@ -78,8 +78,9 @@ int main(int argc, char* argv[])
 
 		rinchi::unit_test::GlobalTestStats().show_stats();
 
-        if (!rinchi::unit_test::GlobalTestStats().err_msg_list.empty())
+        if (!rinchi::unit_test::GlobalTestStats().err_msg_list.empty()) {
             exit_code = 2;
+        }
 
     } catch (std::exception& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
