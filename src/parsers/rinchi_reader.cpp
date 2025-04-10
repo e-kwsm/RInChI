@@ -185,21 +185,24 @@ namespace rinchi {
                     c->m_inchi_string = line;
                 }
                 else if (line.rfind("AuxInfo=", 0) == 0) {
-                    if (c->inchi_string().empty())
+                    if (c->inchi_string().empty()) {
                         throw new RInChIReaderError ("Line " + int2str(line_no) + ": AuxInfo without preceeding InChI string.");
+                    }
                     c->m_inchi_auxinfo = line;
                 }
                 else if (line.empty()) {
                     blank_line_detected = true;
                 }
-                else
+                else {
                     throw RInChIReaderError("Line " + int2str(line_no) + ": Unexpected line data; expected an InChI or AuxInfo string.");
+                }
 
                 ++line_no;
             }
             // Check last-added reaction component.
-            if (c != nullptr)
+            if (c != nullptr) {
                 validate_reaction_component_inchi_strings(c);
+            }
         }
 
         static void add_inchis_to_reaction(const std::string& reactant_inchis, const std::string& product_inchis, const std::string& agent_inchis, Reaction& rxn)
@@ -263,25 +266,29 @@ void RInChIReader::split_into_reaction(const std::string& rinchi_string, const s
 		if (layer_pos != std::string::npos && layer_pos < last_group->length() - 1) {
 			std::string last_tag = last_group->substr(layer_pos, 2);
 			if (last_tag == NOSTRUCT_TAG) {
-				if (!no_struct_data.empty())
+				if (!no_struct_data.empty()) {
 					throw RInChIReaderError ("Duplicate No-Structure tag in RInChI input string.");
+				}
 				no_struct_data = last_group->substr(layer_pos);
 				last_group->erase(layer_pos);
 			}
 			else if (last_tag == DIRECTION_TAG) {
-				if (!direction_data.empty())
+				if (!direction_data.empty()) {
 					throw RInChIReaderError ("Duplicate direction tag in RInChI input string.");
+				}
 				direction_data = last_group->substr(layer_pos);
 				last_group->erase(layer_pos);
 			}
-			else
+			else {
 				break;
+			}
 		}
 	}
 
 	char direction_flag = DIRECTION_FORWARD;
-	if (!direction_data.empty())
+	if (!direction_data.empty()) {
 		direction_flag = direction_data.at(2);
+	}
 
 #ifdef RINCHI_READER_DEBUG_TO_CONSOLE
 	std::cout << "First group:" << std::endl;
@@ -313,13 +320,15 @@ void RInChIReader::split_into_reaction(const std::string& rinchi_string, const s
 	RInChIReaderHelper::create_components_from_inchigroup(third_group, rxn.m_agents);
 
 	// Set reaction direction.
-	if (direction_flag == DIRECTION_EQUILIBRIUM)
+	if (direction_flag == DIRECTION_EQUILIBRIUM) {
 		rxn.m_directionality = rdEquilibrium;
-	else
+	} else {
 		rxn.m_directionality = rdDirectional;
+	}
 
-	if (is_reverse_direction != NULL)
+	if (is_reverse_direction != NULL) {
 		*is_reverse_direction = (direction_flag == DIRECTION_REVERSE);
+	}
 	rxn.m_reverse_output = (direction_flag == DIRECTION_REVERSE);
 
 	/**
@@ -362,12 +371,15 @@ void RInChIReader::split_into_reaction(const std::string& rinchi_string, const s
 	}
 	// If no RAuxInfo, set blank AuxInfo on all components.
 	else {
-		for (ReactionComponentList::const_iterator rc = rxn.reactants().begin(); rc != rxn.reactants().end(); rc++)
+		for (ReactionComponentList::const_iterator rc = rxn.reactants().begin(); rc != rxn.reactants().end(); rc++) {
 			(*rc)->m_inchi_auxinfo = "";
-		for (ReactionComponentList::const_iterator rc = rxn.products().begin(); rc != rxn.products().end(); rc++)
+		}
+		for (ReactionComponentList::const_iterator rc = rxn.products().begin(); rc != rxn.products().end(); rc++) {
 			(*rc)->m_inchi_auxinfo = "";
-		for (ReactionComponentList::const_iterator rc = rxn.agents().begin(); rc != rxn.agents().end(); rc++)
+		}
+		for (ReactionComponentList::const_iterator rc = rxn.agents().begin(); rc != rxn.agents().end(); rc++) {
 			(*rc)->m_inchi_auxinfo = "";
+		}
 	}
 
 	if (!no_struct_data.empty()) {
@@ -375,15 +387,17 @@ void RInChIReader::split_into_reaction(const std::string& rinchi_string, const s
 		no_struct_data.erase(0, 2);
 		size_t first_delim = no_struct_data.find_first_of(NOSTRUCT_DELIM);
 		size_t last_delim  = no_struct_data.find_last_of(NOSTRUCT_DELIM);
-		if (first_delim == std::string::npos || last_delim == std::string::npos)
+		if (first_delim == std::string::npos || last_delim == std::string::npos) {
 			throw RInChIReaderError ("Invalid No-Structure count format in '" + no_struct_data + "'.");
+		}
 
 		rxn.m_nostruct_counts[0] = str2int(no_struct_data.substr(0, first_delim));
 		rxn.m_nostruct_counts[1] = str2int(no_struct_data.substr(first_delim + 1, last_delim - first_delim - 1));
 		rxn.m_nostruct_counts[2] = str2int(no_struct_data.substr(last_delim + 1));
 
-		if (rxn.m_reverse_output)
+		if (rxn.m_reverse_output) {
 			std::swap(rxn.m_nostruct_counts[0], rxn.m_nostruct_counts[1]);
+		}
 
 		// Add No-Structures to reaction component lists.
 		ReactionComponentList* rc_lists [RINCHI_NUM_GROUPS];
@@ -393,8 +407,9 @@ void RInChIReader::split_into_reaction(const std::string& rinchi_string, const s
 		rc_lists[2] = &rxn.m_agents;
 
 		std::string nostruct_auxinfo = NOSTRUCT_AUXINFO;
-		if (rinchi_auxinfo.empty())
+		if (rinchi_auxinfo.empty()) {
 			nostruct_auxinfo.clear();
+		}
 
 		for (int i = 0; i < RINCHI_NUM_GROUPS; i++) {
 			for (int k = 0; k < rxn.m_nostruct_counts[i]; k++) {
@@ -406,9 +421,11 @@ void RInChIReader::split_into_reaction(const std::string& rinchi_string, const s
 			}
 		}
 	}
-	else
-		for (int i = 0; i < RINCHI_NUM_GROUPS; i++)
+	else {
+		for (int i = 0; i < RINCHI_NUM_GROUPS; i++) {
 			rxn.m_nostruct_counts[i] = 0;
+		}
+	}
 
 	rxn.m_is_cache_valid = false;
 
