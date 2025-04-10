@@ -199,7 +199,9 @@ void InChIGenerator::calculate_inchi(inchi_Input& inchi_input, std::string& o_in
 void InChIGenerator::validate_inchi(const std::string& inchi_string)
 {
 	if (inchi_string == rinchi::NOSTRUCT_INCHI)
+	{
 		return;
+	}
 
 	inchi_Output inchi_output;
 	memset(&inchi_output, 0, sizeof(inchi_output));
@@ -221,7 +223,9 @@ void InChIGenerator::validate_inchi(const std::string& inchi_string)
 			while (true) {
 				std::getline(log_lines, line);
 				if (!log_lines)
+				{
 					break;
+				}
 				if (!err_msg.empty())
 					err_msg += "\n" + line;
 				else {
@@ -266,7 +270,9 @@ InChIToStructureConverter::InChIToStructureConverter()
 	reset();
 
 	if (inchi_lib_state.generator_handle == 0)
+	{
 		inchi_lib_state.generator_handle = lib_INCHIGEN_Create();
+	}
 }
 
 InChIToStructureConverter::~InChIToStructureConverter()
@@ -345,12 +351,18 @@ std::string InChIToStructureConverter::to_molfile(const std::string& inchi_strin
 	// avoid losing chirality information in output.
 	// (char*) cast to avoid "warning: deprecated conversion from string constant to ‘char*’" from gcc.
 	if (output_chiral_flag == 1)
+	{
 		m_input_inchi.szOptions = (char*) INCHI_OUTPUT_OPTION_SDF_CHIRAL_FLAG_ON;
+	}
 	else if (output_chiral_flag == 2)
+	{
 		m_input_inchi.szOptions = (char*) INCHI_OUTPUT_OPTION_SDF_CHIRAL_FLAG_OFF;
+	}
 	else
+	{
 		// No AuxInfo used, or AuxInfo not marked as chiral.
 		m_input_inchi.szOptions = (char*) INCHI_OUTPUT_OPTION_SDF;
+	}
 
 	InChICallState::check_return_code(lib_GetINCHI(&m_input_inchi, &m_output));
 
@@ -359,9 +371,13 @@ std::string InChIToStructureConverter::to_molfile(const std::string& inchi_strin
 	// Discard the first line containing an auto-generated structure name.
 	char* result_start = m_output.szInChI;
 	if (result_start == NULL)
+	{
 		throw InChIGeneratorError ("NULL string returned from successful GetINCHI call!");
+	}
 	while (*result_start != '\n' && *result_start != 0)
+	{
 		result_start++;
+	}
 
 	std::string result = result_start;
 	// Remove trailing "$$$$\n" line from SD record, giving us the molfile only.
