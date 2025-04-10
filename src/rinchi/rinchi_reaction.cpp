@@ -72,8 +72,9 @@ ReactionComponent::ReactionComponent()
 
 ReactionComponent::~ReactionComponent()
 {
-	if (m_inchi_input.atom != NULL)
+	if (m_inchi_input.atom != NULL) {
 		delete [] m_inchi_input.atom;
+	}
 }
 
 void ReactionComponent::clear_inchi_input()
@@ -87,17 +88,19 @@ void ReactionComponent::clear_inchi_input()
 
 void ReactionComponent::initialize(int atom_count, bool is_chiral)
 {
-	if (m_inchi_input.atom != NULL)
+	if (m_inchi_input.atom != NULL) {
 		delete [] m_inchi_input.atom;
+	}
 
 	clear_inchi_input();
 	m_inchi_input.num_atoms = atom_count;
 	m_inchi_input.atom = new inchi_Atom[atom_count];
 
-	if (is_chiral)
+	if (is_chiral) {
 		m_inchi_input.szOptions = (char *) INCHI_INPUT_OPTION_CHIRAL_FLAG_ON;
-	else
+	} else {
 		m_inchi_input.szOptions = (char *) INCHI_INPUT_OPTION_CHIRAL_FLAG_OFF;
+	}
 }
 
 inchi_Input& ReactionComponent::inchi_input()
@@ -109,10 +112,11 @@ bool ReactionComponent::is_no_structure() const
 {
 	// If component was instantiated directly from RInChI, then
 	// 'm_inchi_input' has not had atoms allocated.
-	if (m_inchi_input.atom == NULL)
+	if (m_inchi_input.atom == NULL) {
 		return m_inchi_string == INCHI_STD_HEADER + "/";
-	else
+	} else {
 		return m_inchi_input.num_atoms == 0;
+	}
 }
 
 void ReactionComponent::reset_inchi_string()
@@ -124,8 +128,9 @@ void ReactionComponent::reset_inchi_string()
 
 const std::string& ReactionComponent::inchi_string()
 {
-	if (!m_inchi_string.empty())
+	if (!m_inchi_string.empty()) {
 		return m_inchi_string;
+	}
 
 	InChIGenerator().calculate_inchi(m_inchi_input, m_inchi_string, m_inchi_auxinfo);
 	return m_inchi_string;
@@ -133,8 +138,9 @@ const std::string& ReactionComponent::inchi_string()
 
 const std::string& ReactionComponent::inchi_auxinfo()
 {
-	if (!m_inchi_string.empty())
+	if (!m_inchi_string.empty()) {
 		return m_inchi_auxinfo;
+	}
 
 	InChIGenerator().calculate_inchi(m_inchi_input, m_inchi_string, m_inchi_auxinfo);
 	return m_inchi_auxinfo;
@@ -142,8 +148,9 @@ const std::string& ReactionComponent::inchi_auxinfo()
 
 const std::string& ReactionComponent::inchi_key()
 {
-	if (!m_inchi_key.empty())
+	if (!m_inchi_key.empty()) {
 		return m_inchi_key;
+	}
 
 	m_inchi_key = InChIGenerator().inchi_string2key(inchi_string());
 	return m_inchi_key;
@@ -164,8 +171,9 @@ namespace {
 
 	void clear_component_list(ReactionComponentList& list)
 	{
-		for (ReactionComponentList::iterator rc = list.begin(); rc != list.end(); rc++)
+		for (ReactionComponentList::iterator rc = list.begin(); rc != list.end(); rc++) {
 			delete *rc;
+		}
 		list.clear();
 	}
 
@@ -216,8 +224,9 @@ ReactionComponent* Reaction::add_agent()
 void Reaction::delete_agent(ReactionComponent* agent)
 {
 	ReactionComponentList::iterator agent_to_delete = std::find(m_agents.begin(), m_agents.end(), agent);
-	if (agent_to_delete == m_agents.end())
+	if (agent_to_delete == m_agents.end()) {
 		return;
+	}
 
 	m_is_cache_valid = false;
 	m_agents.erase(agent_to_delete);
@@ -244,10 +253,12 @@ int Reaction::num_output_groups(bool consider_nostruct_counts)
 {
 	int result = 1;
 	for (int i = 0; i < RINCHI_NUM_GROUPS; i++) {
-		if (!m_rinchi_groups[m_output_order[i]].empty())
+		if (!m_rinchi_groups[m_output_order[i]].empty()) {
 			result = i + 1;
-		if (consider_nostruct_counts && m_nostruct_counts[m_output_order[i]] != 0)
+		}
+		if (consider_nostruct_counts && m_nostruct_counts[m_output_order[i]] != 0) {
 			result = i + 1;
+		}
 	}
 	return result;
 }
@@ -264,10 +275,11 @@ namespace {
 		switch (direction)
 		{
 		case rdDirectional:
-			if (reverse_output)
+			if (reverse_output) {
 				output << DIRECTION_TAG << DIRECTION_REVERSE;
-			else
+			} else {
 				output << DIRECTION_TAG << DIRECTION_FORWARD;
+			}
 			break;
 		case rdEquilibrium:
 			output <<  DIRECTION_TAG << DIRECTION_EQUILIBRIUM;
@@ -281,8 +293,9 @@ namespace {
 
 void Reaction::update_cache()
 {
-	if (m_is_cache_valid)
+	if (m_is_cache_valid) {
 		return;
+	}
 
 	// Initialize output cache.
 	m_reverse_output = false;
@@ -301,10 +314,11 @@ void Reaction::update_cache()
 			m_nostruct_counts[i] = 0;
 			// 'm_ordered_rcs' will not contain any No-Structures.
 			for (ReactionComponentList::const_iterator rc = rc_lists[i]->begin(); rc != rc_lists[i]->end(); rc++) {
-				if ((*rc)->is_no_structure())
+				if ((*rc)->is_no_structure()) {
 					m_nostruct_counts[i]++;
-				else
+				} else {
 					m_ordered_rcs[i].push_back(*rc);
+				}
 			}
 		}
 	}
@@ -339,10 +353,11 @@ void Reaction::update_cache()
 			rinchi_stream << (*rc)->inchi_string().substr(INCHI_STD_HEADER.length());
 			// AuxInfo minus the leading "AuxInfo=".
 			const std::string& auxinfo = (*rc)->inchi_auxinfo();
-			if (auxinfo.empty())
+			if (auxinfo.empty()) {
 				rauxinfo_stream << DELIM_LAYER;
-			else
+			} else {
 				rauxinfo_stream << auxinfo.substr(INCHI_AUXINFO_HEADER.length());
+			}
 		}
 
 		m_rinchi_groups[i] = rinchi_stream.str();
@@ -352,8 +367,9 @@ void Reaction::update_cache()
 	// Is the output reversed ?        +- products          +- reactants
 	m_reverse_output = m_rinchi_groups[1] < m_rinchi_groups[0];
 
-	if (m_reverse_output)
+	if (m_reverse_output) {
 		std::swap(m_output_order[0], m_output_order[1]);
+	}
 
 	m_is_cache_valid = true;
 }
@@ -366,14 +382,16 @@ const std::string Reaction::rinchi_string()
 	result << RINCHI_STD_HEADER;
 
 	bool has_nostructures = false;
-	for (int i = 0; i < RINCHI_NUM_GROUPS; i++)
+	for (int i = 0; i < RINCHI_NUM_GROUPS; i++) {
 		has_nostructures |= (m_nostruct_counts[i] > 0);
+	}
 
 	int group_count = num_output_groups(false);
 	for (int i = 0; i < group_count; i++) {
 		result << m_rinchi_groups[m_output_order[i]];
-		if (i < group_count - 1)
+		if (i < group_count - 1) {
 			result << DELIM_GROUP;
+		}
 	}
 
 	output_direction_flag(m_directionality, m_reverse_output, result);
@@ -382,8 +400,9 @@ const std::string Reaction::rinchi_string()
 		result << NOSTRUCT_TAG;
 		for (int i = 0; i < RINCHI_NUM_GROUPS; i++) {
 			result << m_nostruct_counts[m_output_order[i]];
-			if (i < RINCHI_NUM_GROUPS - 1)
+			if (i < RINCHI_NUM_GROUPS - 1) {
 				result << NOSTRUCT_DELIM;
+			}
 		}
 	}
 
@@ -400,8 +419,9 @@ const std::string Reaction::rinchi_auxinfo()
 	int group_count = num_output_groups(false);
 	for (int i = 0; i < group_count; i++) {
 		result << m_rauxinfo_groups[m_output_order[i]];
-		if (i < group_count - 1)
+		if (i < group_count - 1) {
 			result << DELIM_GROUP;
+		}
 	}
 
 	return result.str();
