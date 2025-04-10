@@ -60,13 +60,15 @@ void MdlRxnfileWriter::write_reaction(const Reaction& reaction, std::ostream& ou
 		// Lines two and three: Reaction name (blank) and producer identity..
 		output_stream << '\n' << "      " << RINCHI_IDENTIFIER << '\n';
 		// Line four: Comments.
-		if (reaction.directionality() == rdEquilibrium)
+		if (reaction.directionality() == rdEquilibrium) {
 			output_stream << "NOTE: Reaction is an equilibrium reaction.";
+		}
 		output_stream << '\n';
 		// Count line: #Reactants #Products.
 		output_stream << setw(3) << reaction.reactants().size() << setw(3) << reaction.products().size();
-        if ( do_write_agents && (!reaction.agents().empty()) )
+        if ( do_write_agents && (!reaction.agents().empty()) ) {
             output_stream << setw(3) << reaction.agents().size();
+        }
         output_stream << '\n';
 		// Reactants and products as molfiles, each one prefixed with an MDL_TAG_RXN_COMPONENT_START line.
 		InChIToStructureConverter sc;
