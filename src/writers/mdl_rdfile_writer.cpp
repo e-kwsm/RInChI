@@ -69,10 +69,11 @@ namespace {
 
 		const int MAX_DATE_FORMAT_STRING_LENGTH = 200;
 		char tmdescr[MAX_DATE_FORMAT_STRING_LENGTH] = {0};
-		if ( strftime(tmdescr, sizeof(tmdescr) - 1, "%m/%d/%Y %H:%M:%S", &current_time) > 0 )
+		if ( strftime(tmdescr, sizeof(tmdescr) - 1, "%m/%d/%Y %H:%M:%S", &current_time) > 0 ) {
 			return tmdescr;
-		else
+		} else {
 			return "N/A";
+		}
 	}
 
 }
